@@ -82,6 +82,8 @@ Everything else is automatic.
 
 ## Quick Start
 
+**Requirements:** Node.js 20+, a GitHub repo, an AI provider key or GitHub Copilot Enterprise access.
+
 ```bash
 # 1. Fork this repo on GitHub
 
@@ -163,6 +165,12 @@ Go to **Settings > Secrets and variables > Actions** in your repo and add:
 | `JIRA_BASE_URL` | Your Jira instance URL, e.g. `https://yourorg.atlassian.net` |
 | `JIRA_USER_EMAIL` | Email address associated with your Jira account |
 | `JIRA_API_TOKEN` | Jira API token — generate at [id.atlassian.com](https://id.atlassian.com/manage-profile/security/api-tokens) |
+
+The workflow requires these permissions (already set in the workflow file — no action needed):
+- `contents: write` — to commit generated notes back to the repo
+- `pull-requests: read` — to read PR descriptions
+
+If your repo has branch protection on `main`, you'll need to allow the ShipSignal bot to bypass it, or configure a dedicated bot token with write access.
 
 **Secret management options:**
 
@@ -376,6 +384,9 @@ Useful for re-generating notes after updating a persona file, or for previewing 
 
 **`Persona file not found: personas/X.md`**
 A persona listed in `team-config.yml` doesn't have a corresponding file in `personas/`. Either create the file or remove the persona name from the `deploy_points[].personas` list.
+
+**Workflow triggered but no notes generated — no error**
+Your branch pattern in `deploy_points[].branch_pattern` likely doesn't match the branch you pushed to. Check that `main` is listed for pushes to main, `release/*` for release branches, etc. Use a `workflow_dispatch` run with an explicit environment override to test.
 
 **`No deploy point configured for environment: X`**
 The detected environment doesn't match any `deploy_points[].environment` in your config. Check your branch pattern matches the branch you pushed to, or use a `workflow_dispatch` run with an explicit environment override.

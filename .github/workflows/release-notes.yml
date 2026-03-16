@@ -111,5 +111,5 @@ jobs:
             echo "No new release notes generated."
           else
             git commit -m "chore(release-notes): generate notes for ${GITHUB_SHA::8}"
-            git push
+            git push || { echo "::error::Push failed — check branch protection rules and GITHUB_TOKEN permissions"; exit 1; }
           fi

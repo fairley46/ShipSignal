@@ -1,5 +1,30 @@
+# Dependencies
 node_modules/
+
+# Compiled output
 dist/
+*.tsbuildinfo
+
+# Local environment
 .env
 .env.local
+
+# Caches
+.eslintcache
 *.local
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
