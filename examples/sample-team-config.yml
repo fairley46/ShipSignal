@@ -1,0 +1,74 @@
+# release-voice — sample team configuration
+# Copy this file to config/team-config.yml and customize for your team.
+
+team:
+  name: "Payments Team"
+  jira_project_key: "PAY"
+
+deploy_points:
+  - environment: production
+    branch_pattern: "main"
+    description: "Customer-facing production deployments"
+    personas:
+      - executive
+      - end-user
+      - partner
+
+  - environment: staging
+    branch_pattern: "release/*"
+    description: "Internal staging / UAT builds"
+    personas:
+      - internal
+      - technical-user
+
+  - environment: hotfix
+    branch_pattern: "hotfix/*"
+    description: "Emergency production patches"
+    personas:
+      - executive
+      - end-user
+
+generation:
+  min_diff_lines: 5
+  max_tokens: 2048
+
+# AI Provider options — uncomment and configure the one your team uses.
+# Set the corresponding secret (AI_API_KEY or GITHUB_TOKEN) in GitHub Actions.
+#
+# Secret management options:
+#   1. Repo-level:   Settings > Secrets and variables > Actions > New repository secret
+#   2. Org-level:    Org Settings > Secrets > New organization secret (shared across repos)
+#   3. Environments: Settings > Environments (scope secrets to production/staging)
+#   4. External:     HashiCorp Vault, AWS Secrets Manager, Azure Key Vault, etc.
+
+# Option A: Anthropic (AI_API_KEY = Anthropic API key)
+ai_provider:
+  type: anthropic
+  model: claude-sonnet-4-6
+
+# Option B: GitHub Copilot Enterprise (uses GITHUB_TOKEN with Copilot API access)
+# ai_provider:
+#   type: github-copilot
+#   model: claude-sonnet-4-5
+
+# Option C: OpenAI (AI_API_KEY = OpenAI API key)
+# ai_provider:
+#   type: openai
+#   model: gpt-4o
+
+# Option D: Azure OpenAI (AI_API_KEY = Azure OpenAI key)
+# ai_provider:
+#   type: azure-openai
+#   model: gpt-4o
+#   azure_endpoint: https://your-resource.openai.azure.com
+#   azure_deployment: your-deployment-name
+
+jira:
+  fetch_linked_tickets: true
+  max_tickets: 20
+  fields_to_fetch:
+    - summary
+    - description
+    - labels
+    - priority
+    - status

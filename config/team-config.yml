@@ -1,0 +1,52 @@
+# release-voice team configuration
+# Copy from examples/sample-team-config.yml and customize for your team.
+
+team:
+  name: "Your Team Name"
+  jira_project_key: "PROJ"         # Used to filter Jira ticket lookups
+
+deploy_points:
+  - environment: production
+    branch_pattern: "main"
+    description: "Customer-facing production deployments"
+    personas:
+      - executive
+      - end-user
+      - partner
+
+  - environment: staging
+    branch_pattern: "release/*"
+    description: "Internal staging / UAT builds"
+    personas:
+      - internal
+      - technical-user
+
+  - environment: hotfix
+    branch_pattern: "hotfix/*"
+    description: "Emergency production patches"
+    personas:
+      - executive
+      - end-user
+
+generation:
+  min_diff_lines: 5                # Skip trivially small pushes
+  max_tokens: 2048
+
+# AI provider — configure once, swap per team fork
+# Supported types: anthropic | github-copilot | openai | azure-openai
+ai_provider:
+  type: anthropic
+  model: claude-sonnet-4-6
+  # Azure OpenAI only:
+  # azure_endpoint: https://your-resource.openai.azure.com
+  # azure_deployment: your-deployment-name
+
+jira:
+  fetch_linked_tickets: true
+  max_tickets: 20
+  fields_to_fetch:
+    - summary
+    - description
+    - labels
+    - priority
+    - status
