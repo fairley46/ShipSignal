@@ -316,6 +316,28 @@ The product team can own and evolve these files independently of the engineering
 
 ---
 
+## Voice Library
+
+ShipSignal ships with 6 sample voices in the `voices/` directory — communication archetypes you can use as-is or as starting points for your own `config/voice.md`.
+
+| Voice | Style |
+|---|---|
+| `the-operator.md` | Direct, accountable, metrics-first |
+| `the-visionary.md` | Minimalist, poetic, human-centered |
+| `the-storyteller.md` | Warm, authentic, failure-honest |
+| `the-customer-champion.md` | Principled, clear, customer-obsessed |
+| `the-straight-shooter.md` | Raw, fast, zero corporate |
+| `the-connector.md` | Empathetic, research-grounded, warm |
+
+To use one:
+```bash
+cp voices/the-operator.md config/voice.md
+```
+
+Or blend elements from multiple voices into a single `config/voice.md`. See `voices/README.md` for guidance.
+
+---
+
 ## Brand Voice
 
 `config/voice.md` is the universal style guide applied to every persona on every run. Think of it as the floor — personas build on top of it.
