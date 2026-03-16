@@ -1,5 +1,5 @@
 {
-  "name": "release-voice-action",
+  "name": "ShipSignal-action",
   "version": "1.0.0",
   "description": "Translates engineering deployments into value-focused release notes",
   "type": "module",

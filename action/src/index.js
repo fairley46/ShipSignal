@@ -72,6 +72,6 @@ async function run() {
 }
 
 run().catch(err => {
-  console.error('release-voice failed:', err.message);
+  console.error('ShipSignal failed:', err.message);
   process.exit(1);
 });

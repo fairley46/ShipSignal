@@ -1,10 +1,10 @@
-# release-voice
+# ShipSignal
 
 Automated release notes that express engineering value in a product owner voice.
 
-On every merge or push, release-voice reads your git diff, PR description, and Jira tickets — then uses AI to generate persona-tailored release notes committed back to your repo as markdown.
+On every merge or push, ShipSignal reads your git diff, PR description, and Jira tickets — then uses AI to generate persona-tailored release notes committed back to your repo as markdown.
 
-**The problem it solves:** Engineering teams ship value constantly and almost never articulate it in a way customers understand. With agentic development, teams ship even faster — but the communication layer hasn't kept up. release-voice automates that translation so product owners can focus on customer conversations, not changelog writing.
+**The problem it solves:** Engineering teams ship value constantly and almost never articulate it in a way customers understand. With agentic development, teams ship even faster — but the communication layer hasn't kept up. ShipSignal automates that translation so product owners can focus on customer conversations, not changelog writing.
 
 ---
 

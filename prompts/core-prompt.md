@@ -89,7 +89,7 @@ environment: {{DEPLOY_ENVIRONMENT}}
 persona: {{PERSONA_NAME}}
 commit: {{GIT_SHA_SHORT}}
 branch: {{BRANCH_NAME}}
-generated_by: release-voice
+generated_by: ShipSignal
 ---
 
 [Release notes content following the persona's output structure]
