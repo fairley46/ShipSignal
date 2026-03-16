@@ -66,7 +66,7 @@ reads: git diff + commits + PR description + Jira tickets
         ↓
 AI extracts value signals (metrics, changes, fixes, improvements)
         ↓
-generates notes per persona (executive, end-user, partner, etc.)
+generates notes per persona (vp, customer, partner, etc.)
         ↓
 commits markdown files to release-notes/{environment}/
 ```
@@ -127,7 +127,7 @@ Configure your deploy points — which branches map to which environments, and w
 deploy_points:
   - environment: production
     branch_pattern: "main"
-    personas: [executive, end-user, partner]
+    personas: [vp, customer, partner]
 
   - environment: staging
     branch_pattern: "release/*"
@@ -242,54 +242,68 @@ Personas are the core of ShipSignal. Each persona is a plain markdown file in th
 
 ### Built-in Personas
 
-| Persona | Audience | Typical environments |
-|---|---|---|
-| `vp.md` | C-suite, VPs — business outcomes, risk, impact | Production |
-| `customer.md` | Day-to-day users — speed, reliability, ease of use | Production |
-| `technical-user.md` | Engineers, admins — specifics, metrics, breaking changes | Staging, Production |
-| `partner.md` | Integration partners — API changes, SDK impacts, deprecations | Production |
-| `internal.md` | QA, product team — what to validate, what to watch for | Staging / UAT |
+ShipSignal ships with 5 ready-to-use personas in the `personas/` directory. Each one is a
+character-driven profile — not a demographic, but a specific person in a specific moment,
+with a clear job to do when they open the release note.
 
-See `examples/sample-output-end-user.md` for an example of generated output.
+**`vp.md` — The VP**
+C-suite or VP-level exec who owns the board and customer narrative. They've been
+blindsided by engineering surprises before. They read the first bullet — if it doesn't
+connect to a business outcome, they close the email. 3-4 bullets max. Every point
+must tie to revenue, risk, retention, or customer impact. No technical terms.
+
+**`customer.md` — The Customer**
+A power user who lives in the product every day. Non-technical, but knows the product
+deeply. Their first question when an update lands: *did this break what I depend on?*
+Write to the felt experience — "loads faster" not "latency reduced." Use "you." Say
+when nothing needs to change.
+
+**`technical-user.md` — The Technical User**
+A senior engineer or admin responsible for keeping their team's systems working with
+this product. They scan for "Breaking:" first, then endpoint names, then metrics.
+Vague language signals an untrustworthy note. Specific numbers and exact API references
+signal one they can act on and share with their team.
+
+**`partner.md` — The Partner**
+A senior engineer at a company that has built an integration on top of this platform.
+When the platform ships a breaking change they don't catch, their customers file tickets
+against *their* product. They need explicit backward-compat declarations, exact API
+surfaces, and hard deprecation timelines — not vague notices.
+
+**`internal.md` — The Internal User**
+A QA lead or product manager running the staging sign-off. They're reading this note
+to build their test plan for the day. Every change is a test scenario. Every high-risk
+flag is somewhere to spend more time. Frame changes as what to validate, not what was
+delivered. Include Jira ticket IDs. List setup dependencies before anything else.
+
+---
+
+Each persona file includes writing instructions, an exact output template, and a
+good/bad example so anyone on the team can generate or review notes for that audience.
+Use `personas/TEMPLATE.md` as a starting point to build your own.
+
+See `examples/sample-output-end-user.md` for a sample of generated output.
 
 ---
 
 ### Adding a Persona
 
-1. Create a new file in `personas/`, e.g. `personas/enterprise-admin.md`
+1. Copy the template as a starting point:
 
-2. Follow this structure:
-
-```markdown
-# Persona: [Name]
-
-## Audience Description
-Who they are, what they care about, what context they operate in.
-
-## Writing Instructions
-- Specific rules for this audience
-- What to include, what to skip
-- How to handle metrics and technical terms
-
-## Output Structure
-The exact markdown template to follow for this audience.
-
-## Tone
-One paragraph describing the register and style.
-
-## Good Example
-> A sample of what great output looks like for this persona.
-
-## Bad Example
-> A sample of what to avoid.
+```bash
+cp personas/TEMPLATE.md personas/enterprise-admin.md
 ```
+
+2. Fill in each section — who they are, when they read this, what they need, what to
+   leave out, writing instructions, output structure, and a good/bad example. The
+   template includes guidance in each section to help you get specific.
 
 3. Add the persona name to the relevant `deploy_points[].personas` list in `config/team-config.yml`:
 
 ```yaml
 deploy_points:
   - environment: production
-    personas: [executive, end-user, partner, enterprise-admin]
+    personas: [vp, customer, partner, enterprise-admin]
 ```
 
 4. Test locally with `PERSONA_OVERRIDE=enterprise-admin npm run dev` before pushing.
@@ -318,18 +332,55 @@ The product team can own and evolve these files independently of the engineering
 
 ## Voice Library
 
-ShipSignal ships with 6 sample voices in the `voices/` directory — communication archetypes you can use as-is or as starting points for your own `config/voice.md`.
+ShipSignal ships with 6 sample voices in the `voices/` directory — communication
+archetypes built from some of the most distinctive communication styles in business.
+Each one is a complete drop-in for `config/voice.md`, or a source of individual
+principles you can blend into your own.
 
-| Voice | Style |
-|---|---|
-| `the-operator.md` | Direct, accountable, metrics-first |
-| `the-visionary.md` | Minimalist, poetic, human-centered |
-| `the-storyteller.md` | Warm, authentic, failure-honest |
-| `the-customer-champion.md` | Principled, clear, customer-obsessed |
-| `the-straight-shooter.md` | Raw, fast, zero corporate |
-| `the-connector.md` | Empathetic, research-grounded, warm |
+**`the-operator.md` — The Operator**
+Direct, accountable, metrics-first. This voice leads with numbers, names problems
+without softening them, and closes with what was done. No throat-clearing. No vague
+enthusiasm. Built for ops-heavy products, reliability platforms, and teams that have
+built trust through consistency and accountability.
+> *"Checkout errors: was 3.2%. Now 0.1%. Here's what we fixed."*
 
-To use one:
+**`the-visionary.md` — The Visionary**
+Minimalist, poetic, human-centered. This voice strips language to its essentials and
+frames every change as a step toward something larger. Short sentences. Big ideas.
+Built for consumer products, design-forward platforms, and teams with a strong point
+of view about what they're building and why.
+> *"The wait is gone. Search is instant now."*
+
+**`the-storyteller.md` — The Storyteller**
+Warm, authentic, failure-honest. This voice doesn't hide the hard parts. It names
+what went wrong, what was learned, and what's different now. Built for B2C products,
+lifestyle brands, and community-driven teams where authenticity and earned trust
+are part of the product value.
+> *"We broke this last month. Here's what we learned and what we shipped to fix it."*
+
+**`the-customer-champion.md` — The Customer Champion**
+Principled, clear, customer-obsessed. This voice connects every change back to a
+specific customer problem. No update is announced without a reason. Built for
+enterprise B2B products and long-term customer relationships where trust is built
+over years, not campaigns.
+> *"Three enterprise teams flagged this in QBRs. It's resolved."*
+
+**`the-straight-shooter.md` — The Straight Shooter**
+Raw, fast, zero corporate. This voice treats customers like adults and gets to the
+point in the first sentence. No hedging, no softening, no filler. Built for developer
+tools, startup products, and audiences that have zero tolerance for PR language.
+> *"Search was broken for queries over 50 characters. Fixed. Go try it."*
+
+**`the-connector.md` — The Connector**
+Empathetic, research-grounded, warm. This voice names the experience customers were
+having before the fix — not just the fix itself. It validates the struggle before
+announcing the solution. Built for healthcare, education, HR, and community products
+where the customer's emotional experience is central to the value being delivered.
+> *"A lot of you have been working around this for months. We heard it. Here's what changed."*
+
+---
+
+To use a voice:
 ```bash
 cp voices/the-operator.md config/voice.md
 ```
@@ -364,10 +415,10 @@ release-notes/{environment}/{YYYY-MM-DD}-{sha8}-{persona}.md
 
 Examples:
 ```
-release-notes/production/2026-03-16-a3f7b2c1-executive.md
-release-notes/production/2026-03-16-a3f7b2c1-end-user.md
+release-notes/production/2026-03-16-a3f7b2c1-vp.md
+release-notes/production/2026-03-16-a3f7b2c1-customer.md
 release-notes/staging/2026-03-15-f4a921bc-internal.md
-release-notes/hotfix/2026-03-14-8de3c12a-end-user.md
+release-notes/hotfix/2026-03-14-8de3c12a-customer.md
 ```
 
 Each file includes YAML frontmatter for downstream tooling:
@@ -376,7 +427,7 @@ Each file includes YAML frontmatter for downstream tooling:
 ---
 release_date: 2026-03-16
 environment: production
-persona: end-user
+persona: customer
 commit: a3f7b2c1
 branch: main
 generated_by: ShipSignal
@@ -396,7 +447,7 @@ Optional inputs:
 | Input | Description | Example |
 |---|---|---|
 | `environment` | Override the detected environment | `production` |
-| `personas` | Comma-separated persona override | `executive,end-user` |
+| `personas` | Comma-separated persona override | `vp,customer` |
 
 Useful for re-generating notes after updating a persona file, or for previewing a new persona against a recent commit before wiring it into the pipeline.
 
