@@ -1,7 +1,30 @@
-export async function fetchJiraTickets(ticketIds, jiraConfig) {
-  const baseUrl = process.env.JIRA_BASE_URL;
-  const email = process.env.JIRA_USER_EMAIL;
-  const token = process.env.JIRA_API_TOKEN;
+import type { JiraConfig, JiraTicket } from './types.js';
+
+interface AdfNode {
+  type?: string;
+  text?: string;
+  content?: AdfNode[];
+}
+
+interface JiraIssueFields {
+  summary?: string;
+  description?: AdfNode;
+  labels?: string[];
+  priority?: { name: string };
+  status?: { name: string };
+}
+
+interface JiraIssueResponse {
+  fields?: JiraIssueFields;
+}
+
+export async function fetchJiraTickets(
+  ticketIds: string[],
+  jiraConfig: JiraConfig | undefined
+): Promise<JiraTicket[]> {
+  const baseUrl = process.env['JIRA_BASE_URL'];
+  const email = process.env['JIRA_USER_EMAIL'];
+  const token = process.env['JIRA_API_TOKEN'];
 
   if (!ticketIds.length || !token || !baseUrl) {
     if (!token || !baseUrl) console.log('Jira credentials not configured, skipping ticket fetch.');
@@ -11,7 +34,7 @@ export async function fetchJiraTickets(ticketIds, jiraConfig) {
   const auth = Buffer.from(`${email}:${token}`).toString('base64');
   const fields = (jiraConfig?.fields_to_fetch ?? ['summary', 'description', 'labels', 'priority', 'status']).join(',');
   const cap = jiraConfig?.max_tickets ?? 20;
-  const results = [];
+  const results: JiraTicket[] = [];
 
   for (const id of ticketIds.slice(0, cap)) {
     try {
@@ -25,7 +48,7 @@ export async function fetchJiraTickets(ticketIds, jiraConfig) {
         continue;
       }
 
-      const data = await res.json();
+      const data = await res.json() as JiraIssueResponse;
       const f = data.fields ?? {};
 
       results.push({
@@ -37,14 +60,14 @@ export async function fetchJiraTickets(ticketIds, jiraConfig) {
         status: f.status?.name ?? 'Unknown',
       });
     } catch (err) {
-      console.warn(`Jira ${id} error:`, err.message);
+      console.warn(`Jira ${id} error:`, err instanceof Error ? err.message : err);
     }
   }
 
   return results;
 }
 
-function extractAdfText(node) {
+function extractAdfText(node: AdfNode | undefined): string {
   if (!node || typeof node !== 'object') return '';
   if (node.type === 'text') return node.text ?? '';
   if (Array.isArray(node.content)) return node.content.map(extractAdfText).join(' ');

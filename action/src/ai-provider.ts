@@ -10,13 +10,13 @@
 
 import { callAnthropic } from './providers/anthropic.js';
 import { callOpenAICompatible } from './providers/openai-compatible.js';
+import type { TeamConfig } from './types.js';
 
 const GITHUB_COPILOT_ENDPOINT = 'https://api.githubcopilot.com';
 
-export async function callAI(prompt, config) {
-  const provider = config.ai_provider ?? {};
-  const type = provider.type ?? 'anthropic';
-  const model = provider.model ?? 'claude-sonnet-4-6';
+export async function callAI(prompt: string, config: TeamConfig): Promise<string> {
+  const provider = config.ai_provider;
+  const { type, model } = provider;
   const maxTokens = config.generation?.max_tokens ?? 2048;
 
   switch (type) {
@@ -28,14 +28,14 @@ export async function callAI(prompt, config) {
         model,
         maxTokens,
         baseURL: GITHUB_COPILOT_ENDPOINT,
-        apiKey: process.env.GITHUB_TOKEN,
+        apiKey: process.env['GITHUB_TOKEN'],
       });
 
     case 'openai':
       return callOpenAICompatible(prompt, {
         model,
         maxTokens,
-        apiKey: process.env.AI_API_KEY,
+        apiKey: process.env['AI_API_KEY'],
       });
 
     case 'azure-openai':
@@ -43,11 +43,13 @@ export async function callAI(prompt, config) {
         model: provider.azure_deployment ?? model,
         maxTokens,
         baseURL: provider.azure_endpoint,
-        apiKey: process.env.AI_API_KEY,
+        apiKey: process.env['AI_API_KEY'],
         isAzure: true,
       });
 
-    default:
-      throw new Error(`Unknown ai_provider.type: "${type}". Use anthropic | github-copilot | openai | azure-openai`);
+    default: {
+      const exhaustive: never = type;
+      throw new Error(`Unknown ai_provider.type: "${exhaustive}". Use anthropic | github-copilot | openai | azure-openai`);
+    }
   }
 }

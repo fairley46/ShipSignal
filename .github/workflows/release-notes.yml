@@ -53,6 +53,10 @@ jobs:
         run: npm ci
         working-directory: action
 
+      - name: Build TypeScript
+        run: npm run build
+        working-directory: action
+
       - name: Detect deploy environment
         id: env-detect
         run: |
@@ -91,7 +95,7 @@ jobs:
           GH_SHA: ${{ github.sha }}
           GH_REF_NAME: ${{ github.ref_name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: node src/index.js
+        run: node dist/index.js
         working-directory: action
 
       - name: Commit generated release notes

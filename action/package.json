@@ -1,16 +1,22 @@
 {
-  "name": "ShipSignal-action",
+  "name": "shipsignal-action",
   "version": "1.0.0",
   "description": "Translates engineering deployments into value-focused release notes",
   "type": "module",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
     "js-yaml": "^4.1.0",
     "openai": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
   },
   "engines": {
     "node": ">=20.0.0"

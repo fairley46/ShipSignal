@@ -5,19 +5,21 @@ import { fetchJiraTickets } from './jira.js';
 import { buildPrompt } from './prompt-builder.js';
 import { callAI } from './ai-provider.js';
 import { writeOutput } from './output-writer.js';
+import type { GeneratedNote } from './types.js';
 
-async function run() {
+async function run(): Promise<void> {
   const config = await loadConfig();
 
-  const deployEnv = process.env.DEPLOY_ENVIRONMENT;
-  const deployPoint = config.deploy_points.find(dp => dp.environment === deployEnv);
+  const deployEnv = process.env['DEPLOY_ENVIRONMENT'];
+  if (!deployEnv) throw new Error('DEPLOY_ENVIRONMENT env var is required');
 
+  const deployPoint = config.deploy_points.find(dp => dp.environment === deployEnv);
   if (!deployPoint) {
     console.log(`No deploy point configured for environment: ${deployEnv}. Skipping.`);
     process.exit(0);
   }
 
-  const personaOverride = process.env.PERSONA_OVERRIDE;
+  const personaOverride = process.env['PERSONA_OVERRIDE'];
   const activePersonas = personaOverride
     ? personaOverride.split(',').map(p => p.trim())
     : deployPoint.personas;
@@ -32,14 +34,14 @@ async function run() {
   }
 
   const prDescription = await fetchPRDescription(
-    process.env.PR_NUMBER,
-    process.env.GH_REPOSITORY,
-    process.env.GITHUB_TOKEN
+    process.env['PR_NUMBER'],
+    process.env['GH_REPOSITORY'],
+    process.env['GITHUB_TOKEN']
   );
 
   const jiraTickets = await fetchJiraTickets(gitContext.ticketIds, config.jira);
 
-  const generated = [];
+  const generated: GeneratedNote[] = [];
 
   for (const personaName of activePersonas) {
     console.log(`Generating for persona: ${personaName}`);
@@ -72,6 +74,6 @@ async function run() {
 }
 
 run().catch(err => {
-  console.error('ShipSignal failed:', err.message);
+  console.error('ShipSignal failed:', err instanceof Error ? err.message : err);
   process.exit(1);
 });

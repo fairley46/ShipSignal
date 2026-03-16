@@ -1,4 +1,8 @@
-export async function fetchPRDescription(prNumber, repository, token) {
+export async function fetchPRDescription(
+  prNumber: string | undefined,
+  repository: string | undefined,
+  token: string | undefined
+): Promise<string> {
   if (!prNumber || !repository || !token) {
     return 'No pull request description available.';
   }
@@ -17,10 +21,10 @@ export async function fetchPRDescription(prNumber, repository, token) {
       return 'Pull request description unavailable.';
     }
 
-    const data = await res.json();
-    return data.body || 'No description provided.';
+    const data = await res.json() as { body?: string };
+    return data.body ?? 'No description provided.';
   } catch (err) {
-    console.warn('GitHub PR fetch error:', err.message);
+    console.warn('GitHub PR fetch error:', err instanceof Error ? err.message : err);
     return 'Pull request description unavailable.';
   }
 }

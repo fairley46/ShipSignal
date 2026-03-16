@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
+import type { TeamConfig, GitContext } from './types.js';
 
-export async function extractGitContext(config) {
+export async function extractGitContext(_config: TeamConfig): Promise<GitContext> {
   let diffSummary = '';
   let diffLineCount = 0;
 
@@ -26,11 +27,11 @@ export async function extractGitContext(config) {
 
   const ticketPattern = /[A-Z][A-Z0-9]+-\d+/g;
   const combined = commitMessages + diffSummary;
-  const allTickets = [...new Set(combined.match(ticketPattern) || [])];
+  const allTickets = [...new Set(combined.match(ticketPattern) ?? [])];
 
-  const projectKey = process.env.JIRA_PROJECT_KEY;
+  const projectKey = process.env['JIRA_PROJECT_KEY'];
   const ticketIds = projectKey
-    ? allTickets.filter(id => id.startsWith(projectKey + '-'))
+    ? allTickets.filter(id => id.startsWith(`${projectKey}-`))
     : allTickets;
 
   return {
@@ -38,7 +39,7 @@ export async function extractGitContext(config) {
     diffLineCount,
     commitMessages,
     ticketIds,
-    sha: (process.env.GH_SHA ?? 'unknown').slice(0, 8),
-    branch: process.env.GH_REF_NAME ?? 'unknown',
+    sha: (process.env['GH_SHA'] ?? 'unknown').slice(0, 8),
+    branch: process.env['GH_REF_NAME'] ?? 'unknown',
   };
 }

@@ -2,14 +2,15 @@ import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import yaml from 'js-yaml';
+import type { TeamConfig } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 export const repoRoot = resolve(__dirname, '../../../');
 
-export async function loadConfig() {
+export async function loadConfig(): Promise<TeamConfig> {
   const configPath = resolve(repoRoot, 'config/team-config.yml');
   const raw = readFileSync(configPath, 'utf8');
-  const config = yaml.load(raw);
+  const config = yaml.load(raw) as TeamConfig;
 
   if (!Array.isArray(config.deploy_points) || config.deploy_points.length === 0) {
     throw new Error('team-config.yml must have a deploy_points array');
@@ -25,7 +26,7 @@ export async function loadConfig() {
   }
 
   if (config.team?.jira_project_key) {
-    process.env.JIRA_PROJECT_KEY = config.team.jira_project_key;
+    process.env['JIRA_PROJECT_KEY'] = config.team.jira_project_key;
   }
 
   return config;

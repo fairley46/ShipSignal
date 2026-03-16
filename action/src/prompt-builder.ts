@@ -1,15 +1,18 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { repoRoot } from './config-loader.js';
+import type { PromptBuilderOptions } from './types.js';
 
-const ENVIRONMENT_FRAMINGS = {
+const ENVIRONMENT_FRAMINGS: Record<string, string> = {
   production: 'Frame all changes as delivered value that customers can use today. Write in present tense.',
   staging: 'Frame changes as what is being validated before production. Internal Jira ticket references are appropriate.',
   hotfix: 'Lead directly with what was broken and what is now resolved. Be factual and direct about severity.',
   canary: 'Frame as a gradual rollout — changes are being validated on a subset of traffic, not yet universally available.',
 };
 
-export async function buildPrompt({ personaName, deployEnv, deployPoint, gitContext, prDescription, jiraTickets, config }) {
+export async function buildPrompt(options: PromptBuilderOptions): Promise<string> {
+  const { personaName, deployEnv, deployPoint, gitContext, prDescription, jiraTickets } = options;
+
   const template = readFileSync(resolve(repoRoot, 'prompts/core-prompt.md'), 'utf8');
   const voiceContent = readFileSync(resolve(repoRoot, 'config/voice.md'), 'utf8');
   const personaContent = readFileSync(resolve(repoRoot, `personas/${personaName}.md`), 'utf8');
@@ -34,9 +37,9 @@ export async function buildPrompt({ personaName, deployEnv, deployPoint, gitCont
     .replace('{{PERSONA_MD_CONTENT}}', personaContent)
     .replace('{{GIT_DIFF_SUMMARY}}', gitContext.diffSummary)
     .replace('{{COMMIT_MESSAGES}}', gitContext.commitMessages)
-    .replace('{{PR_DESCRIPTION}}', prDescription ?? 'No PR description available.')
+    .replace('{{PR_DESCRIPTION}}', prDescription)
     .replace('{{JIRA_TICKETS_BLOCK}}', jiraBlock)
-    .replace(/\{\{ISO_DATE\}\}/g, isoDate)
+    .replace(/\{\{ISO_DATE\}\}/g, isoDate ?? '')
     .replace(/\{\{GIT_SHA_SHORT\}\}/g, gitContext.sha)
     .replace(/\{\{BRANCH_NAME\}\}/g, gitContext.branch);
 }
