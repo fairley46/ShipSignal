@@ -23,6 +23,10 @@ on:
         required: false
         type: string
 
+concurrency:
+  group: shipsignal-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   generate-release-notes:
     if: |
