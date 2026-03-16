@@ -11,8 +11,8 @@ deploy_points:
     branch_pattern: "main"
     description: "Customer-facing production deployments"
     personas:
-      - executive
-      - end-user
+      - vp
+      - customer
       - partner
 
   - environment: staging
@@ -26,8 +26,8 @@ deploy_points:
     branch_pattern: "hotfix/*"
     description: "Emergency production patches"
     personas:
-      - executive
-      - end-user
+      - vp
+      - customer
 
 generation:
   min_diff_lines: 5                # Skip trivially small pushes

@@ -244,8 +244,8 @@ Personas are the core of ShipSignal. Each persona is a plain markdown file in th
 
 | Persona | Audience | Typical environments |
 |---|---|---|
-| `executive.md` | C-suite, VPs — business outcomes, risk, impact | Production |
-| `end-user.md` | Day-to-day users — speed, reliability, ease of use | Production |
+| `vp.md` | C-suite, VPs — business outcomes, risk, impact | Production |
+| `customer.md` | Day-to-day users — speed, reliability, ease of use | Production |
 | `technical-user.md` | Engineers, admins — specifics, metrics, breaking changes | Staging, Production |
 | `partner.md` | Integration partners — API changes, SDK impacts, deprecations | Production |
 | `internal.md` | QA, product team — what to validate, what to watch for | Staging / UAT |
