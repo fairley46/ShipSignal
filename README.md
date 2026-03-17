@@ -363,7 +363,9 @@ cp voices/the-operator.md config/voice.md
 
 ## Brand Voice
 
-`config/voice.md` is the universal style guide applied to every persona on every run. Think of it as the floor — personas build on top of it.
+Each pre-built voice in the library is a fully-formed `config/voice.md` — ready to use as-is. But you're not required to start from one. If your brand has an established style, you can write `config/voice.md` from scratch using the same structure.
+
+Either way, `config/voice.md` is the universal style guide applied to every persona on every run. Think of it as the floor — personas build on top of it.
 
 It defines:
 
