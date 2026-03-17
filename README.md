@@ -4,7 +4,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Node.js >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)
 
-> Engineering teams are shipping faster than ever. The communication layer hasn't kept up.
+> A GitHub Action that reads every merge, generates audience-specific release notes using AI, and commits them to your repo automatically. No manual writing. No communication gap.
 
 ---
 
@@ -45,23 +45,26 @@
 > Async validation pipeline reduces p99 checkout from 4.1s to 0.8s. Export jobs
 > backgrounded to worker queue."
 
+**What ShipSignal generated for the VP:**
+> "Checkout reliability incident resolved. p99 latency down 80% to under a second.
+> A potential double-charge bug was caught and fixed before customer impact."
+
 **What ShipSignal generated for the customer:**
 > "Checkout is fast now — under a second. Exports no longer block your browser.
 > We fixed a bug that could charge you twice. Nothing you need to do."
 
-Same facts. Right signal for the right audience. Automatically, on every merge.
+**What ShipSignal generated for the technical user:**
+> "Payment lock TTL extended 3s → 8s (resolves race under high concurrency). Async
+> validation pipeline: p99 4.1s → 0.8s. Export jobs moved to worker queue — no longer
+> blocking the request thread. No API or schema changes."
+
+Same commit. Three different notes. Each one says exactly what that audience needs to hear — and nothing they don't. Committed to your repo automatically on every merge.
 
 ---
 
 ## The Problem
 
-Agentic development has changed the game. Engineers are shipping at a pace that was impossible two years ago — features, fixes, and optimizations that used to take sprints now land in hours. Jira is still a place to track work, but an engineer can do the work of an entire sprint in a single session.
-
-The problem is that none of that velocity shows up in the customer conversation.
-
-Product owners are still manually reading through PRs, decoding commit messages, and translating technical changes into language that customers can understand and care about. That's not a product owner problem — it's a structural gap. The communication layer was built for a world where teams shipped every two weeks. It hasn't scaled to a world where teams ship continuously, at 10x the pace.
-
-The result: engineering teams are creating enormous value, and almost none of it gets communicated. Customers don't know what changed. Stakeholders can't see the progress. The PO spends time writing changelogs instead of talking to customers.
+Engineers are shipping faster than ever — but the communication layer hasn't kept up. Product owners still spend hours manually reading PRs, decoding commit messages, and translating technical changes into language that customers can understand. That's not a scalable job. The result: enormous engineering value that never gets communicated. Customers don't know what changed. Stakeholders can't see the progress.
 
 **ShipSignal closes that gap.** It automates the translation from technical work to customer value — so the communication layer moves at the speed of code.
 
@@ -72,10 +75,10 @@ The result: engineering teams are creating enormous value, and almost none of it
 On every merge or push, ShipSignal:
 
 1. Reads the git diff, commit messages, and PR description
-2. Pulls linked Jira ticket context via the Jira API
+2. Pulls linked Jira ticket context (optional — works without Jira)
 3. Uses AI to extract the value signal — metrics, improvements, fixes, new capabilities
-4. Generates release notes tailored to each configured audience (persona)
-5. Commits the notes back to your repo as markdown files
+4. Generates a separate release note for each configured **persona** — a named audience like `vp`, `customer`, or `technical-user`, each with its own framing and structure
+5. Commits the notes to your repo as markdown files automatically
 
 The product owner's job shifts from **writing** to **talking to customers**. The communication still happens — it just doesn't require a human to produce it.
 
@@ -97,7 +100,7 @@ generates notes per persona (vp, customer, partner, etc.)
 commits markdown files to release-notes/{environment}/
 ```
 
-**Two configuration surfaces — that's it:**
+Content customization happens in two places:
 
 - **`config/voice.md`** — your brand voice, writing rules, banned phrases. Owned by product.
 - **`personas/*.md`** — one file per audience. Add, edit, or remove. No code changes needed.
@@ -131,9 +134,10 @@ audience needed to hear. Same facts. Right signal for the right person.
 # 2. Copy and configure the sample config
 cp examples/sample-team-config.yml config/team-config.yml
 
-# 3. Set your team name, Jira project key, AI provider, and deploy points
+# 3. Set your team name, AI provider, and deploy points (branches → personas)
 
-# 4. Add secrets to GitHub Actions (AI_API_KEY, JIRA_BASE_URL, JIRA_USER_EMAIL, JIRA_API_TOKEN)
+# 4. Add your AI provider key to GitHub Actions secrets (AI_API_KEY)
+#    Jira secrets are optional — ShipSignal works without them
 
 # 5. Test locally before pushing (see Local Development)
 
@@ -200,12 +204,14 @@ ai_provider:
 
 Go to **Settings > Secrets and variables > Actions** in your repo and add:
 
-| Secret | Description |
-|---|---|
-| `AI_API_KEY` | Your AI provider API key (not needed for GitHub Copilot Enterprise) |
-| `JIRA_BASE_URL` | Your Jira instance URL, e.g. `https://yourorg.atlassian.net` |
-| `JIRA_USER_EMAIL` | Email address associated with your Jira account |
-| `JIRA_API_TOKEN` | Jira API token — generate at [id.atlassian.com](https://id.atlassian.com/manage-profile/security/api-tokens) |
+| Secret | Required | Description |
+|---|---|---|
+| `AI_API_KEY` | Yes (unless using GitHub Copilot) | Your AI provider API key |
+| `JIRA_BASE_URL` | Optional | Your Jira instance URL, e.g. `https://yourorg.atlassian.net` |
+| `JIRA_USER_EMAIL` | Optional | Email address associated with your Jira account |
+| `JIRA_API_TOKEN` | Optional | Jira API token — generate at [id.atlassian.com](https://id.atlassian.com/manage-profile/security/api-tokens) |
+
+ShipSignal works without Jira. If the secrets aren't set, it skips ticket enrichment and generates notes from the git diff and commit messages alone.
 
 The workflow requires these permissions (already set in the workflow file — no action needed):
 - `contents: write` — to commit generated notes back to the repo
@@ -232,6 +238,14 @@ Open `config/voice.md` and update it to match your brand. This file defines:
 - How to handle metrics, security fixes, and sensitive information
 
 This file is owned by the product team. No engineering changes needed to update it.
+
+---
+
+### You're set
+
+Push to a configured branch. ShipSignal will generate a release note for each persona in that deploy point and commit the files to `release-notes/{environment}/` automatically. No further action required.
+
+To optionally send those notes to Slack, Teams, Confluence, or a webhook, see [Notifications](#notifications).
 
 ---
 
@@ -426,7 +440,7 @@ To send these notes to Slack, Teams, Confluence, or a custom endpoint, see [Noti
 
 ## Manual Runs
 
-Trigger ShipSignal manually from the GitHub Actions UI under **Actions > Generate Release Notes > Run workflow**.
+Trigger note generation manually from the GitHub Actions UI under **Actions > Generate Release Notes > Run workflow**.
 
 Optional inputs:
 
@@ -436,6 +450,8 @@ Optional inputs:
 | `personas` | Comma-separated persona override | `vp,customer` |
 
 Useful for re-generating notes after updating a persona file, or for previewing a new persona against a recent commit before wiring it into the pipeline.
+
+This triggers **note generation only** — it writes and commits markdown files. To send notifications, see [Notifications](#notifications).
 
 ---
 
@@ -608,6 +624,18 @@ The `GITHUB_TOKEN` in your Actions environment doesn't have permission to push t
 
 **Output is vague or missing metrics**
 The quality of generated notes depends on the quality of inputs. Write descriptive PR descriptions and include performance data in commit messages or Jira ticket descriptions. The AI extracts what it's given — if the signal isn't there, the output reflects that.
+
+**Notification workflow runs but nothing is sent**
+Either there's no `notify` block in `team-config.yml` for that environment, or the persona name in the workflow input doesn't match any note file in `release-notes/{environment}/`. Check that the file exists and that the persona name matches exactly.
+
+**Slack or Teams message not arriving**
+Confirm the webhook URL secret is set in your repo and uncommented in the `env:` block of `notify.yml`. Test the webhook URL directly with a `curl -X POST` to confirm it's still active — Slack and Teams webhook URLs can expire or be revoked.
+
+**Confluence update failing with 403**
+The API token doesn't have permission to edit the target page. Confirm the token belongs to a user with edit access to that specific page. Confluence space permissions and page-level restrictions are evaluated separately.
+
+**Confluence update failing with 409**
+A version conflict — the page was updated between ShipSignal's GET and PUT. Re-run the notification workflow; it will fetch the current version and retry cleanly.
 
 ---
 
