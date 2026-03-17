@@ -23,6 +23,7 @@
   - [Adding a Persona](#adding-a-persona)
   - [Editing a Persona](#editing-a-persona)
   - [Removing a Persona](#removing-a-persona)
+- [Voice Library](#voice-library)
 - [Brand Voice](#brand-voice)
 - [Output](#output)
 - [Manual Runs](#manual-runs)
@@ -334,6 +335,12 @@ The product team can own and evolve these files independently of the engineering
 ---
 
 ## Voice Library
+
+If personas answer **who** you're writing for, voices answer **how you sound doing it.**
+
+A voice is your brand's writing personality — the tone, the rhythm, the rules that make your release notes sound like you and not a generic AI. It lives in a single file (`config/voice.md`) and applies universally across every persona on every run. One voice, many audiences.
+
+ShipSignal ships with six pre-built voices. Pick the one closest to your brand, copy it to `config/voice.md`, and edit freely. Or pull elements from multiple voices to build your own.
 
 | File | Voice | Style | Best for | Sample line |
 |---|---|---|---|---|
