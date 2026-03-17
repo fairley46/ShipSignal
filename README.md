@@ -23,8 +23,9 @@
   - [Adding a Persona](#adding-a-persona)
   - [Editing a Persona](#editing-a-persona)
   - [Removing a Persona](#removing-a-persona)
-- [Voice Library](#voice-library)
 - [Brand Voice](#brand-voice)
+  - [Use a pre-built voice](#use-a-pre-built-voice)
+  - [Build your own](#build-your-own)
 - [Output](#output)
 - [Manual Runs](#manual-runs)
 - [Troubleshooting](#troubleshooting)
@@ -334,13 +335,19 @@ The product team can own and evolve these files independently of the engineering
 
 ---
 
-## Voice Library
+## Brand Voice
 
-If personas answer **who** you're writing for, voices answer **how you sound doing it.**
+If personas answer **who** you're writing for, brand voice answers **how you sound doing it.**
 
-A voice is your brand's writing personality — the tone, the rhythm, the rules that make your release notes sound like you and not a generic AI. It lives in a single file (`config/voice.md`) and applies universally across every persona on every run. One voice, many audiences.
+Your brand voice is a single file — `config/voice.md` — that applies universally to every persona on every run. It's the writing personality layer: tone, rhythm, banned phrases, formatting rules, how to translate technical metrics into plain language. One file controls all of it, across every audience, on every deployment.
 
-ShipSignal ships with six pre-built voices. Pick the one closest to your brand, copy it to `config/voice.md`, and edit freely. Or pull elements from multiple voices to build your own.
+You have two options: start from a pre-built voice and get running today, or build your own from scratch.
+
+---
+
+### Use a pre-built voice
+
+ShipSignal ships with six voices, each tuned for a different brand personality. Pick the one that sounds like you, copy it to `config/voice.md`, and you're set. Edit it freely — they're starting points, not rules.
 
 | File | Voice | Style | Best for | Sample line |
 |---|---|---|---|---|
@@ -351,23 +358,17 @@ ShipSignal ships with six pre-built voices. Pick the one closest to your brand, 
 | `the-straight-shooter.md` | The Straight Shooter | Raw, fast, zero corporate | Developer tools, startup products | *"Search was broken for queries over 50 chars. Fixed. Go try it."* |
 | `the-connector.md` | The Connector | Empathetic, research-grounded, warm | Healthcare, education, HR, community | *"A lot of you have been working around this for months. Here's what changed."* |
 
-Pick the one that sounds like you. Edit it freely. Or copy elements from multiple voices
-into your own `config/voice.md`. See `voices/README.md` for guidance.
-
-To use one:
 ```bash
 cp voices/the-operator.md config/voice.md
 ```
 
 ---
 
-## Brand Voice
+### Build your own
 
-Each pre-built voice in the library is a fully-formed `config/voice.md` — ready to use as-is. But you're not required to start from one. If your brand has an established style, you can write `config/voice.md` from scratch using the same structure.
+If your brand has an established style, write `config/voice.md` from scratch. The file has a defined structure — see `voices/README.md` for guidance — but the content is entirely yours.
 
-Either way, `config/voice.md` is the universal style guide applied to every persona on every run. Think of it as the floor — personas build on top of it.
-
-It defines:
+A complete `config/voice.md` defines:
 
 - **Core principles** — how to frame value, language level, specificity requirements
 - **Banned phrases** — words and constructions that should never appear in output
@@ -375,7 +376,7 @@ It defines:
 - **Metric translation guide** — how to convert technical numbers into customer language
 - **Sensitive information rules** — what to never expose (infra topology, vulnerability details, internal ticket IDs)
 
-Update `config/voice.md` whenever your brand voice evolves, a new communications standard is adopted, or you find patterns in output that need correcting across all personas at once.
+Update `config/voice.md` whenever your brand voice evolves, a new communications standard is adopted, or you find patterns in the output that need correcting across all personas at once.
 
 ---
 
