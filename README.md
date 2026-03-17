@@ -11,6 +11,7 @@
 - [The Problem](#the-problem)
 - [What ShipSignal Does](#what-shipsignal-does)
 - [How It Works](#how-it-works)
+- [End-to-End Example](#end-to-end-example)
 - [Quick Start](#quick-start)
 - [Setup Guide](#setup-guide)
 - [Local Development](#local-development)
@@ -77,6 +78,17 @@ commits markdown files to release-notes/{environment}/
 - **`personas/*.md`** — one file per audience. Add, edit, or remove. No code changes needed.
 
 Everything else is automatic.
+
+---
+
+## End-to-End Example
+
+See [`examples/e2e-example.md`](examples/e2e-example.md) for a complete walkthrough —
+a real production merge with commit messages, a PR description, and Jira tickets going
+in, and a generated customer release note (Operator voice) coming out.
+
+The last section shows the gap this closes side-by-side: what the engineer wrote vs.
+what the customer needed to hear.
 
 ---
 
