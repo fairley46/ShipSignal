@@ -1,6 +1,8 @@
 # ShipSignal
 
+![CI](https://github.com/fairley46/ShipSignal/actions/workflows/ci.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+![Node.js >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)
 
 > Engineering teams are shipping faster than ever. The communication layer hasn't kept up.
 
@@ -8,6 +10,7 @@
 
 ## Table of Contents
 
+- [See It in Action](#see-it-in-action)
 - [The Problem](#the-problem)
 - [What ShipSignal Does](#what-shipsignal-does)
 - [How It Works](#how-it-works)
@@ -25,6 +28,21 @@
 - [Manual Runs](#manual-runs)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
+
+---
+
+## See It in Action
+
+**What the engineer committed:**
+> "Resolve race condition in payment processor. Lock TTL extended from 3.0s to 8.0s.
+> Async validation pipeline reduces p99 checkout from 4.1s to 0.8s. Export jobs
+> backgrounded to worker queue."
+
+**What ShipSignal generated for the customer:**
+> "Checkout is fast now — under a second. Exports no longer block your browser.
+> We fixed a bug that could charge you twice. Nothing you need to do."
+
+Same facts. Right signal for the right audience. Automatically, on every merge.
 
 ---
 
