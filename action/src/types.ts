@@ -69,6 +69,7 @@ export interface JiraConfig {
 export interface OutputConfig {
   base_path?: string;
   subfolder_by_environment?: boolean;
+  max_files_per_persona?: number;
 }
 
 export interface JiraTicket {

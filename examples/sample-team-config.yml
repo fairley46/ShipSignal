@@ -96,3 +96,13 @@ jira:
     - labels
     - priority
     - status
+
+# output: optional. Controls where files are written and how many are kept.
+#
+# output:
+#   base_path: release-notes        # default
+#   subfolder_by_environment: true  # default — puts files under release-notes/{environment}/
+#   max_files_per_persona: 50       # default — keeps the 50 most recent files per persona per folder.
+#                                   # Oldest files are deleted automatically after each write.
+#                                   # Set to 0 to keep everything (no pruning).
+#                                   # Git history preserves deleted files.

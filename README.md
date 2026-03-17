@@ -17,6 +17,7 @@
 - [End-to-End Example](#end-to-end-example)
 - [Quick Start](#quick-start)
 - [Setup Guide](#setup-guide)
+- [Engineering Process](#engineering-process)
 - [Local Development](#local-development)
 - [Personas](#personas)
   - [Built-in Personas](#built-in-personas)
@@ -78,7 +79,11 @@ On every merge or push, ShipSignal:
 2. Pulls linked Jira ticket context (optional, works without Jira)
 3. Uses AI to extract the value signal: metrics, improvements, fixes, new capabilities
 4. Generates a separate release note for each configured **persona** (a named audience like `vp`, `customer`, or `technical-user`, each with its own framing and structure)
-5. Commits the notes to your repo as markdown files automatically
+5. Commits the notes to your repo as markdown files automatically, then prunes to keep the most recent files per persona (configurable, default 50)
+
+That's the automatic path — it always runs, no action needed. A second path exists for teams that want to push notes further: once the markdown is committed, an engineer reads it and manually triggers the notification workflow to send to Slack, Teams, Confluence, or a webhook. AI-generated content is never sent automatically.
+
+**Note on output quality:** ShipSignal translates what it's given. The quality of generated notes is directly proportional to the quality of PR descriptions and commit messages. See [Engineering Process](#engineering-process) for what to write and why it matters.
 
 The product owner's job shifts from **writing** to **talking to customers**. The communication still happens. It just doesn't require a human to produce it.
 
@@ -89,15 +94,24 @@ The product owner's job shifts from **writing** to **talking to customers**. The
 ```
 merge / push to configured branch
         ↓
-GitHub Action fires
+GitHub Action fires automatically
         ↓
-reads: git diff + commits + PR description + Jira tickets
+reads: git diff + commits + PR description + Jira tickets (optional)
         ↓
 AI extracts value signals (metrics, changes, fixes, improvements)
         ↓
 generates notes per persona (vp, customer, partner, etc.)
         ↓
-commits markdown files to release-notes/{environment}/
+commits markdown files to release-notes/{environment}/    ← always, no action needed
+
+        ── if notify is configured ──────────────────────────────
+        ↓
+engineer reads the committed markdown files
+        ↓
+Actions → "Send Notifications" → Run workflow → pick environment + persona
+        ↓
+hooks fire: Slack / Teams / Confluence / webhook
+        ─────────────────────────────────────────────────────────
 ```
 
 Content customization happens in two places:
@@ -105,7 +119,7 @@ Content customization happens in two places:
 - **`config/voice.md`**: your brand voice, writing rules, banned phrases. Owned by product.
 - **`personas/*.md`**: one file per audience. Add, edit, or remove. No code changes needed.
 
-Everything else is automatic.
+The automatic path (merge → generate → commit) runs on every push with no action needed. The notification path is always manual: an engineer reads the committed notes first, then decides to send.
 
 ---
 
@@ -245,7 +259,49 @@ This file is owned by the product team. No engineering changes needed to update 
 
 Push to a configured branch. ShipSignal will generate a release note for each persona in that deploy point and commit the files to `release-notes/{environment}/` automatically. No further action required.
 
+Before your first merge, read [Engineering Process](#engineering-process). The quality of generated notes depends entirely on what your team puts into PR descriptions and commit messages. Two minutes there will pay off on every deploy.
+
 To optionally send those notes to Slack, Teams, Confluence, or a webhook, see [Notifications](#notifications).
+
+---
+
+## Engineering Process
+
+ShipSignal's output quality is entirely dependent on what goes into PRs and commits. The AI translates your inputs — it cannot invent specifics that aren't there.
+
+### PR descriptions are the main input
+
+ShipSignal reads the PR description first. If the description is vague, the notes will be vague.
+
+| PR description | What ShipSignal generates |
+|---|---|
+| `fixes stuff` | Vague, unusable notes |
+| `Resolved a session timeout bug causing users to be logged out after 30 min of inactivity` | Sharp, specific notes for every persona |
+
+Signal doesn't need to be polished. It needs to be specific.
+
+### Commit messages fill the gaps
+
+ShipSignal reads the last 20 commit messages. They supplement the PR description, especially when a PR contains multiple distinct changes.
+
+| Commit message | Value to ShipSignal |
+|---|---|
+| `fix auth bug` | Nothing useful |
+| `fix JWT expiry not refreshing on mobile after background resume` | Translatable — audience, symptom, trigger all present |
+
+### What ShipSignal does not do
+
+ShipSignal does not review code, validate accuracy, or verify that what was described actually shipped. It trusts the inputs and translates them. Wrong inputs produce wrong notes — just in cleaner language. The engineer is responsible for what goes into the PR.
+
+### Short checklist
+
+Before merging:
+
+- [ ] PR title names the user-facing change, not the implementation (`Fix session timeout on mobile` not `Update JWT refresh handler`)
+- [ ] PR description has 2–3 sentences: what changed, why it matters, who it affects
+- [ ] Commit messages reference what broke or improved, not just what file was touched
+
+Teams that follow this consistently get release notes that could be sent directly to customers. Teams that don't get notes that need editing.
 
 ---
 
@@ -433,6 +489,20 @@ generated_by: ShipSignal
 ```
 
 If a push contains no user-visible changes (pure internal refactor, dependency bumps with no impact), ShipSignal skips file generation for that run.
+
+**File retention**
+
+By default ShipSignal keeps the 50 most recent files per persona per environment folder. After each write it scans the folder, sorts files oldest-first (the `YYYY-MM-DD` prefix makes this free), and deletes anything beyond the limit. Git history preserves deleted files.
+
+Configure this with `max_files_per_persona` in the `output` block:
+
+```yaml
+output:
+  max_files_per_persona: 50   # default — keep the last 50 deploys per audience
+  # max_files_per_persona: 0  # set to 0 to keep everything (no pruning)
+```
+
+For 3 personas × 3 environments the default cap is 450 files total.
 
 To send these notes to Slack, Teams, Confluence, or a custom endpoint, see [Notifications](#notifications). That step is always manual: you read the committed files first, then decide to send.
 
@@ -623,7 +693,7 @@ Check that `JIRA_BASE_URL`, `JIRA_USER_EMAIL`, and `JIRA_API_TOKEN` are all set.
 The `GITHUB_TOKEN` in your Actions environment doesn't have permission to push to a protected branch. Either loosen branch protection rules to allow the ShipSignal bot, or set the workflow to write to a separate branch.
 
 **Output is vague or missing metrics**
-The quality of generated notes depends on the quality of inputs. Write descriptive PR descriptions and include performance data in commit messages or Jira ticket descriptions. The AI extracts what it's given. If the signal isn't there, the output reflects that.
+The quality of generated notes depends on the quality of inputs. ShipSignal translates what it's given — it cannot invent specifics that aren't in the PR description or commit messages. See [Engineering Process](#engineering-process) for a checklist and before/after examples of what makes a difference.
 
 **Notification workflow runs but nothing is sent**
 Either there's no `notify` block in `team-config.yml` for that environment, or the persona name in the workflow input doesn't match any note file in `release-notes/{environment}/`. Check that the file exists and that the persona name matches exactly.
