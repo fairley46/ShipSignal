@@ -58,15 +58,15 @@
 > validation pipeline: p99 4.1s → 0.8s. Export jobs moved to worker queue — no longer
 > blocking the request thread. No API or schema changes."
 
-Same commit. Three different notes. Each one says exactly what that audience needs to hear — and nothing they don't. Committed to your repo automatically on every merge.
+Same commit. Three different notes. Each one says exactly what that audience needs to hear, and nothing they don't. Committed to your repo automatically on every merge.
 
 ---
 
 ## The Problem
 
-Engineers are shipping at a pace that didn't exist two years ago — a single agentic session can produce what used to take a sprint. But the communication layer hasn't kept up. Product owners still spend hours manually reading PRs, decoding commit messages, and translating technical changes into language that customers can understand. That's not a scalable job. The result: enormous engineering value that never gets communicated. Customers don't know what changed. Stakeholders can't see the progress.
+Engineers are shipping at a pace that didn't exist two years ago. A single agentic session can produce what used to take a sprint. But the communication layer hasn't kept up. Product owners still spend hours manually reading PRs, decoding commit messages, and translating technical changes into language that customers can understand. That's not a scalable job. The result: enormous engineering value that never gets communicated. Customers don't know what changed. Stakeholders can't see the progress.
 
-**ShipSignal closes that gap.** It automates the translation from technical work to customer value — so the communication layer moves at the speed of code.
+**ShipSignal closes that gap.** It automates the translation from technical work to customer value, so the communication layer moves at the speed of code.
 
 ---
 
@@ -75,12 +75,12 @@ Engineers are shipping at a pace that didn't exist two years ago — a single ag
 On every merge or push, ShipSignal:
 
 1. Reads the git diff, commit messages, and PR description
-2. Pulls linked Jira ticket context (optional — works without Jira)
-3. Uses AI to extract the value signal — metrics, improvements, fixes, new capabilities
-4. Generates a separate release note for each configured **persona** — a named audience like `vp`, `customer`, or `technical-user`, each with its own framing and structure
+2. Pulls linked Jira ticket context (optional, works without Jira)
+3. Uses AI to extract the value signal: metrics, improvements, fixes, new capabilities
+4. Generates a separate release note for each configured **persona** (a named audience like `vp`, `customer`, or `technical-user`, each with its own framing and structure)
 5. Commits the notes to your repo as markdown files automatically
 
-The product owner's job shifts from **writing** to **talking to customers**. The communication still happens — it just doesn't require a human to produce it.
+The product owner's job shifts from **writing** to **talking to customers**. The communication still happens. It just doesn't require a human to produce it.
 
 ---
 
@@ -102,8 +102,8 @@ commits markdown files to release-notes/{environment}/
 
 Content customization happens in two places:
 
-- **`config/voice.md`** — your brand voice, writing rules, banned phrases. Owned by product.
-- **`personas/*.md`** — one file per audience. Add, edit, or remove. No code changes needed.
+- **`config/voice.md`**: your brand voice, writing rules, banned phrases. Owned by product.
+- **`personas/*.md`**: one file per audience. Add, edit, or remove. No code changes needed.
 
 Everything else is automatic.
 
@@ -114,10 +114,10 @@ Everything else is automatic.
 See [`examples/e2e-example.md`](examples/e2e-example.md) for a complete walkthrough:
 
 1. A team picks The Operator voice and copies it to `config/voice.md`
-2. They configure deploy points — which branches, which environments, which personas
+2. They configure deploy points: which branches, which environments, which personas
 3. An engineer merges three commits to `main`
 4. ShipSignal reads the commits, PR description, and Jira tickets and extracts the value signals
-5. Three notes are generated and committed — one per configured persona
+5. Three notes are generated and committed, one per configured persona
 
 The final section shows the gap side-by-side: what the engineer wrote vs. what each
 audience needed to hear. Same facts. Right signal for the right person.
@@ -150,7 +150,7 @@ See the [Setup Guide](#setup-guide) for full configuration details.
 
 ## Setup Guide
 
-### Step 1 — Configure your team
+### Step 1: Configure your team
 
 Copy the sample config:
 
@@ -166,7 +166,7 @@ team:
   jira_project_key: "PLAT"
 ```
 
-Configure your deploy points — which branches map to which environments, and which personas fire for each:
+Configure your deploy points: which branches map to which environments, and which personas fire for each:
 
 ```yaml
 deploy_points:
@@ -181,7 +181,7 @@ deploy_points:
 
 ---
 
-### Step 2 — Choose your AI provider
+### Step 2: Choose your AI provider
 
 Set `ai_provider.type` in `team-config.yml`:
 
@@ -200,7 +200,7 @@ ai_provider:
 
 ---
 
-### Step 3 — Add secrets
+### Step 3: Add secrets
 
 Go to **Settings > Secrets and variables > Actions** in your repo and add:
 
@@ -209,26 +209,26 @@ Go to **Settings > Secrets and variables > Actions** in your repo and add:
 | `AI_API_KEY` | Yes (unless using GitHub Copilot) | Your AI provider API key |
 | `JIRA_BASE_URL` | Optional | Your Jira instance URL, e.g. `https://yourorg.atlassian.net` |
 | `JIRA_USER_EMAIL` | Optional | Email address associated with your Jira account |
-| `JIRA_API_TOKEN` | Optional | Jira API token — generate at [id.atlassian.com](https://id.atlassian.com/manage-profile/security/api-tokens) |
+| `JIRA_API_TOKEN` | Optional | Jira API token, generate one at [id.atlassian.com](https://id.atlassian.com/manage-profile/security/api-tokens) |
 
 ShipSignal works without Jira. If the secrets aren't set, it skips ticket enrichment and generates notes from the git diff and commit messages alone.
 
-The workflow requires these permissions (already set in the workflow file — no action needed):
-- `contents: write` — to commit generated notes back to the repo
-- `pull-requests: read` — to read PR descriptions
+The workflow requires these permissions (already set in the workflow file, no action needed):
+- `contents: write`: commit generated notes back to the repo
+- `pull-requests: read`: read PR descriptions
 
 If your repo has branch protection on `main`, you'll need to allow the ShipSignal bot to bypass it, or configure a dedicated bot token with write access.
 
 **Secret management options:**
 
-- **Repo-level** — Settings > Secrets and variables > Actions (default)
-- **Org-level** — Org Settings > Secrets — set once, inherited by all repos. Best for org-wide rollouts.
-- **Environments** — Scope secrets to specific environments (production vs staging) with optional approval gates
-- **External** — HashiCorp Vault, AWS Secrets Manager, Azure Key Vault — for teams with existing secret management infrastructure
+- **Repo-level**: Settings > Secrets and variables > Actions (default)
+- **Org-level**: Org Settings > Secrets. Set once, inherited by all repos. Best for org-wide rollouts.
+- **Environments**: scope secrets to specific environments (production vs staging) with optional approval gates
+- **External**: HashiCorp Vault, AWS Secrets Manager, Azure Key Vault, for teams with existing secret management infrastructure
 
 ---
 
-### Step 4 — Customize your voice
+### Step 4: Customize your voice
 
 Open `config/voice.md` and update it to match your brand. This file defines:
 
@@ -268,7 +268,7 @@ npm install
 npm run dev
 ```
 
-`DRY_RUN=true` is set in `.env.local.example` by default — ShipSignal will generate notes and print them to your terminal without writing any files or committing anything.
+`DRY_RUN=true` is set in `.env.local.example` by default. ShipSignal will generate notes and print them to your terminal without writing any files or committing anything.
 
 **Other useful commands:**
 
@@ -289,7 +289,7 @@ npm run build       # compile TypeScript to dist/
 
 ## Personas
 
-Personas are the core of ShipSignal. Each persona is a plain markdown file in the `personas/` folder that defines a specific audience — who they are, what they care about, how they want to be spoken to, and the exact structure of their release notes.
+Personas are the core of ShipSignal. Each persona is a plain markdown file in the `personas/` folder that defines a specific audience: who they are, what they care about, how they want to be spoken to, and the exact structure of their release notes.
 
 **No code changes are needed to manage personas.** Add a file, edit a file, delete a file.
 
@@ -299,14 +299,14 @@ Personas are the core of ShipSignal. Each persona is a plain markdown file in th
 
 | File | Persona | Who they are | Typical environments |
 |---|---|---|---|
-| `vp.md` | The VP | C-suite or VP exec who owns the board and customer narrative. Reads the first bullet — if it doesn't connect to a business outcome, the email closes. No technical terms, ever. | Production |
+| `vp.md` | The VP | C-suite or VP exec who owns the board and customer narrative. Reads the first bullet; if it doesn't connect to a business outcome, the email closes. No technical terms, ever. | Production |
 | `customer.md` | The Customer | Power user who lives in the product daily. First question when an update lands: *did this break what I depend on?* Writes to felt experience, not implementation. | Production |
 | `technical-user.md` | The Technical User | Senior engineer or admin keeping their systems working with this product. Scans for `Breaking:` first, then endpoint names, then metrics. Vague language means an untrustworthy note. | Staging, Production |
 | `partner.md` | The Partner | Engineer at a company that has built an integration on top of this platform. A breaking change they miss becomes their customer's problem. Needs exact API surfaces and hard deprecation timelines. | Production |
-| `internal.md` | The Internal User | QA lead or PM running the staging sign-off. Reading this to build a test plan. Every change is a test scenario. Needs Jira IDs, setup steps, and edge cases — not customer-facing framing. | Staging / UAT |
+| `internal.md` | The Internal User | QA lead or PM running the staging sign-off. Reading this to build a test plan. Every change is a test scenario. Needs Jira IDs, setup steps, and edge cases, not customer-facing framing. | Staging / UAT |
 
 Each file includes writing instructions, an exact output template, and a good/bad example.
-Add your own by copying `personas/TEMPLATE.md` — no code changes needed.
+Add your own by copying `personas/TEMPLATE.md`, no code changes needed.
 
 ---
 
@@ -318,7 +318,7 @@ Add your own by copying `personas/TEMPLATE.md` — no code changes needed.
 cp personas/TEMPLATE.md personas/enterprise-admin.md
 ```
 
-2. Fill in each section — who they are, when they read this, what they need, what to
+2. Fill in each section: who they are, when they read this, what they need, what to
    leave out, writing instructions, output structure, and a good/bad example. The
    template includes guidance in each section to help you get specific.
 
@@ -338,10 +338,10 @@ deploy_points:
 
 Open the file in `personas/` and update it directly. Changes take effect on the next pipeline run. Common edits:
 
-- **Tone shifts** — update the Tone section and the Good/Bad examples
-- **Structure changes** — update the Output Structure template
-- **Scope changes** — add or remove items from Writing Instructions
-- **Audience changes** — if a persona's audience definition evolves, update the Audience Description
+- **Tone shifts**: update the Tone section and the Good/Bad examples
+- **Structure changes**: update the Output Structure template
+- **Scope changes**: add or remove items from Writing Instructions
+- **Audience changes**: if a persona's audience definition evolves, update the Audience Description
 
 The product team can own and evolve these files independently of the engineering team.
 
@@ -358,7 +358,7 @@ The product team can own and evolve these files independently of the engineering
 
 If personas answer **who** you're writing for, brand voice answers **how you sound doing it.**
 
-Your brand voice is a single file — `config/voice.md` — that applies universally to every persona on every run. It's the writing personality layer: tone, rhythm, banned phrases, formatting rules, how to translate technical metrics into plain language. One file controls all of it, across every audience, on every deployment.
+Your brand voice is a single file, `config/voice.md`, that applies universally to every persona on every run. It's the writing personality layer: tone, rhythm, banned phrases, formatting rules, how to translate technical metrics into plain language. One file controls all of it, across every audience, on every deployment.
 
 You have two options: start from a pre-built voice and get running today, or build your own from scratch.
 
@@ -366,7 +366,7 @@ You have two options: start from a pre-built voice and get running today, or bui
 
 ### Use a pre-built voice
 
-ShipSignal ships with six voices, each tuned for a different brand personality. Pick the one that sounds like you, copy it to `config/voice.md`, and you're set. Edit it freely — they're starting points, not rules.
+ShipSignal ships with six voices, each tuned for a different brand personality. Pick the one that sounds like you, copy it to `config/voice.md`, and you're set. Edit them freely. They're starting points, not rules.
 
 | File | Voice | Style | Best for | Sample line |
 |---|---|---|---|---|
@@ -385,15 +385,15 @@ cp voices/the-operator.md config/voice.md
 
 ### Build your own
 
-If your brand has an established style, write `config/voice.md` from scratch. The file has a defined structure — see `voices/README.md` for guidance — but the content is entirely yours.
+If your brand has an established style, write `config/voice.md` from scratch. The file has a defined structure (see `voices/README.md` for guidance) but the content is entirely yours.
 
 A complete `config/voice.md` defines:
 
-- **Core principles** — how to frame value, language level, specificity requirements
-- **Banned phrases** — words and constructions that should never appear in output
-- **Formatting rules** — headers, bullets, metric formatting, date formatting
-- **Metric translation guide** — how to convert technical numbers into customer language
-- **Sensitive information rules** — what to never expose (infra topology, vulnerability details, internal ticket IDs)
+- **Core principles**: how to frame value, language level, specificity requirements
+- **Banned phrases**: words and constructions that should never appear in output
+- **Formatting rules**: headers, bullets, metric formatting, date formatting
+- **Metric translation guide**: how to convert technical numbers into customer language
+- **Sensitive information rules**: what to never expose (infra topology, vulnerability details, internal ticket IDs)
 
 Update `config/voice.md` whenever your brand voice evolves, a new communications standard is adopted, or you find patterns in the output that need correcting across all personas at once.
 
@@ -403,7 +403,7 @@ Update `config/voice.md` whenever your brand voice evolves, a new communications
 
 **By default, ShipSignal does one thing: it commits markdown files to your repo.**
 
-On every merge or push to a configured branch, the `release-notes.yml` workflow runs automatically, generates notes for each persona, and commits them back to the repo as a `ShipSignal[bot]` commit. No manual step required. The committed markdown is the primary output — everything else (notifications, downstream tooling) is optional and built on top of it.
+On every merge or push to a configured branch, the `release-notes.yml` workflow runs automatically, generates notes for each persona, and commits them back to the repo as a `ShipSignal[bot]` commit. No manual step required. The committed markdown is the primary output. Everything else (notifications, downstream tooling) is optional and built on top of it.
 
 Generated files land in:
 
@@ -432,9 +432,9 @@ generated_by: ShipSignal
 ---
 ```
 
-If a push contains no user-visible changes — pure internal refactor, dependency bumps with no impact — ShipSignal skips file generation for that run.
+If a push contains no user-visible changes (pure internal refactor, dependency bumps with no impact), ShipSignal skips file generation for that run.
 
-To send these notes to Slack, Teams, Confluence, or a custom endpoint, see [Notifications](#notifications). That step is always manual — you read the committed files first, then decide to send.
+To send these notes to Slack, Teams, Confluence, or a custom endpoint, see [Notifications](#notifications). That step is always manual: you read the committed files first, then decide to send.
 
 ---
 
@@ -451,23 +451,23 @@ Optional inputs:
 
 Useful for re-generating notes after updating a persona file, or for previewing a new persona against a recent commit before wiring it into the pipeline.
 
-This triggers **note generation only** — it writes and commits markdown files. To send notifications, see [Notifications](#notifications).
+This triggers **note generation only**. It writes and commits markdown files. To send notifications, see [Notifications](#notifications).
 
 ---
 
 ## Notifications
 
-Notifications are optional additions on top of the primary output — markdown files committed to your repo. The committed markdown is always the source of truth. Notifications exist to close the gap between "the note exists in the repo" and "the right people know about it."
+Notifications are optional additions on top of the primary output: markdown files committed to your repo. The committed markdown is always the source of truth. Notifications exist to close the gap between "the note exists in the repo" and "the right people know about it."
 
 Three distinct feedback loops are supported: instant communication (Slack, Teams), documentation systems (Confluence), and custom webhooks (email relays, Zapier, Make, or your own serverless function). Each hook is opt-in, per-persona, and gated behind an explicit manual step.
 
-**Critical constraint: review before sending.** The `notify.yml` workflow is manually triggered. The engineer merges, reads the committed markdown, and only then goes to Actions → "Send Notifications" → Run workflow. The manual trigger is the review step — AI-generated content is never sent automatically.
+**Critical constraint: review before sending.** The `notify.yml` workflow is manually triggered. The engineer merges, reads the committed markdown, and only then goes to Actions → "Send Notifications" → Run workflow. The manual trigger is the review step. AI-generated content is never sent automatically.
 
 ---
 
 ### Configuration
 
-Add a `notify` block to any `deploy_points` entry in `team-config.yml`. Keys are persona names or `"*"` (wildcard for all personas in that deploy point). Values are arrays — a single persona can fan out to multiple channels.
+Add a `notify` block to any `deploy_points` entry in `team-config.yml`. Keys are persona names or `"*"` (wildcard for all personas in that deploy point). Values are arrays, so a single persona can fan out to multiple channels.
 
 ```yaml
 deploy_points:
@@ -494,7 +494,7 @@ deploy_points:
           token_secret: CONFLUENCE_TOKEN
 ```
 
-Values prefixed with `$` (e.g., `$SLACK_CUSTOMER_WEBHOOK`) are resolved from environment variables at runtime — secrets never live in the config file. For `confluence`, `username_secret` and `token_secret` are the **names** of the environment variables, not the values.
+Values prefixed with `$` (e.g., `$SLACK_CUSTOMER_WEBHOOK`) are resolved from environment variables at runtime. Secrets never live in the config file. For `confluence`, `username_secret` and `token_secret` are the **names** of the environment variables, not the values.
 
 Add the corresponding secrets to the `notify.yml` workflow env block:
 
@@ -511,7 +511,7 @@ Notification failures are caught and logged as warnings. They never fail the wor
 
 ### Slack and Microsoft Teams
 
-Both use Incoming Webhooks — no OAuth app setup required.
+Both use Incoming Webhooks, no OAuth app setup required.
 
 **Slack:**
 
@@ -542,11 +542,11 @@ notify:
 
 ### Confluence
 
-Appends the release note to an existing Confluence page, prepended at the top (newest-first). The page must already exist — ShipSignal updates it, it does not create it.
+Appends the release note to an existing Confluence page, prepended at the top (newest-first). The page must already exist. ShipSignal updates it, it does not create it.
 
 **Setup:**
 
-1. Find the page ID — it's in the URL: `...atlassian.net/wiki/spaces/SPACE/pages/98765432/Page+Title`
+1. Find the page ID in the URL: `...atlassian.net/wiki/spaces/SPACE/pages/98765432/Page+Title`
 2. Generate an Atlassian API token at [id.atlassian.com](https://id.atlassian.com/manage-profile/security/api-tokens)
 3. Add two secrets: `CONFLUENCE_USER` (your Atlassian email) and `CONFLUENCE_TOKEN` (the API token)
 
@@ -581,9 +581,9 @@ A generic HTTP POST that covers email relays, Zapier, Make, and any custom endpo
 ```
 
 Use cases:
-- **Email** — point at a SendGrid, Resend, or Postmark relay endpoint
-- **Zapier / Make** — use a webhook trigger, then route to any downstream service
-- **Custom** — your own serverless function, internal API, or notification service
+- **Email**: point at a SendGrid, Resend, or Postmark relay endpoint
+- **Zapier / Make**: use a webhook trigger, then route to any downstream service
+- **Custom**: your own serverless function, internal API, or notification service
 
 ```yaml
 notify:
@@ -604,7 +604,7 @@ All header values are also resolved from environment variables when prefixed wit
 **`Persona file not found: personas/X.md`**
 A persona listed in `team-config.yml` doesn't have a corresponding file in `personas/`. Either create the file or remove the persona name from the `deploy_points[].personas` list.
 
-**Workflow triggered but no notes generated — no error**
+**Workflow triggered but no notes generated (no error)**
 Your branch pattern in `deploy_points[].branch_pattern` likely doesn't match the branch you pushed to. Check that `main` is listed for pushes to main, `release/*` for release branches, etc. Use a `workflow_dispatch` run with an explicit environment override to test.
 
 **`No deploy point configured for environment: X`**
@@ -617,25 +617,25 @@ The `ai_provider.type` in `team-config.yml` isn't one of the supported values. S
 Your `AI_API_KEY` secret is missing, expired, or set incorrectly. For GitHub Copilot Enterprise, confirm your `GITHUB_TOKEN` has Copilot API access enabled at the org level.
 
 **Jira tickets not appearing in generated notes**
-Check that `JIRA_BASE_URL`, `JIRA_USER_EMAIL`, and `JIRA_API_TOKEN` are all set. Verify commit messages reference ticket IDs matching the pattern `PROJ-123` where `PROJ` matches your `jira_project_key`. Jira errors are non-fatal — the run continues without ticket context rather than failing.
+Check that `JIRA_BASE_URL`, `JIRA_USER_EMAIL`, and `JIRA_API_TOKEN` are all set. Verify commit messages reference ticket IDs matching the pattern `PROJ-123` where `PROJ` matches your `jira_project_key`. Jira errors are non-fatal. The run continues without ticket context rather than failing.
 
 **Bot commit fails with `refusing to allow... without workflow scope`**
 The `GITHUB_TOKEN` in your Actions environment doesn't have permission to push to a protected branch. Either loosen branch protection rules to allow the ShipSignal bot, or set the workflow to write to a separate branch.
 
 **Output is vague or missing metrics**
-The quality of generated notes depends on the quality of inputs. Write descriptive PR descriptions and include performance data in commit messages or Jira ticket descriptions. The AI extracts what it's given — if the signal isn't there, the output reflects that.
+The quality of generated notes depends on the quality of inputs. Write descriptive PR descriptions and include performance data in commit messages or Jira ticket descriptions. The AI extracts what it's given. If the signal isn't there, the output reflects that.
 
 **Notification workflow runs but nothing is sent**
 Either there's no `notify` block in `team-config.yml` for that environment, or the persona name in the workflow input doesn't match any note file in `release-notes/{environment}/`. Check that the file exists and that the persona name matches exactly.
 
 **Slack or Teams message not arriving**
-Confirm the webhook URL secret is set in your repo and uncommented in the `env:` block of `notify.yml`. Test the webhook URL directly with a `curl -X POST` to confirm it's still active — Slack and Teams webhook URLs can expire or be revoked.
+Confirm the webhook URL secret is set in your repo and uncommented in the `env:` block of `notify.yml`. Test the webhook URL directly with a `curl -X POST` to confirm it's still active. Slack and Teams webhook URLs can expire or be revoked.
 
 **Confluence update failing with 403**
 The API token doesn't have permission to edit the target page. Confirm the token belongs to a user with edit access to that specific page. Confluence space permissions and page-level restrictions are evaluated separately.
 
 **Confluence update failing with 409**
-A version conflict — the page was updated between ShipSignal's GET and PUT. Re-run the notification workflow; it will fetch the current version and retry cleanly.
+A version conflict. The page was updated between ShipSignal's GET and PUT. Re-run the notification workflow; it will fetch the current version and retry cleanly.
 
 ---
 
