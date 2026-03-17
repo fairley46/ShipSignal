@@ -64,7 +64,7 @@ Same commit. Three different notes. Each one says exactly what that audience nee
 
 ## The Problem
 
-Engineers are shipping faster than ever — but the communication layer hasn't kept up. Product owners still spend hours manually reading PRs, decoding commit messages, and translating technical changes into language that customers can understand. That's not a scalable job. The result: enormous engineering value that never gets communicated. Customers don't know what changed. Stakeholders can't see the progress.
+Engineers are shipping at a pace that didn't exist two years ago — a single agentic session can produce what used to take a sprint. But the communication layer hasn't kept up. Product owners still spend hours manually reading PRs, decoding commit messages, and translating technical changes into language that customers can understand. That's not a scalable job. The result: enormous engineering value that never gets communicated. Customers don't know what changed. Stakeholders can't see the progress.
 
 **ShipSignal closes that gap.** It automates the translation from technical work to customer value — so the communication layer moves at the speed of code.
 
