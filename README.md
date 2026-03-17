@@ -6,7 +6,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Node.js >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)
 
-> A GitHub Action that reads every merge and generates audience-specific plain language notes automatically — committed back to your repo on every PR.
+> A GitHub Action that reads every merge and generates audience-specific plain language notes automatically, committed back to your repo on every PR.
 
 ---
 
@@ -69,9 +69,9 @@ On every merge or push, Legibly:
 4. Generates a separate release note for each configured **persona** (a named audience like `vp`, `customer`, or `technical-user`, each with its own framing and structure)
 5. Commits the notes to your repo as markdown files automatically, then prunes to keep the most recent files per persona (configurable, default 50)
 
-That's the automatic path — it always runs, no action needed. A second path exists for teams that want to push notes further: once the markdown is committed, an engineer reads it and manually triggers the notification workflow to send to Slack, Teams, Confluence, or a webhook. AI-generated content is never sent automatically.
+That's the automatic path. It always runs, no action needed. A second path exists for teams that want to push notes further: once the markdown is committed, an engineer reads it and manually triggers the notification workflow to send to Slack, Teams, Confluence, or a webhook. AI-generated content is never sent automatically.
 
-A third path — the [MCP skill](docs/mcp.md) — exposes the same translation pipeline conversationally inside any MCP-compatible client, for on-demand use before a merge, mid-review, or during standup prep.
+A third path is the [MCP skill](docs/mcp.md), which exposes the same translation pipeline conversationally inside any MCP-compatible client. Useful for on-demand use before a merge, mid-review, or during standup prep.
 
 **Note on output quality:** Legibly translates what it's given. The quality of generated notes is directly proportional to the quality of PR descriptions and commit messages. See [Engineering Process](docs/setup.md#engineering-process) for what to write and why it matters.
 
@@ -118,7 +118,7 @@ The automatic path (merge → generate → commit) runs on every push with no ac
 | Folder / file | What it is |
 |---|---|
 | `docs/` | Problem overview, setup guide, customization, notifications, and troubleshooting. |
-| `personas/` | One markdown file per audience. Add, edit, or remove — no code changes needed. |
+| `personas/` | One markdown file per audience. Add, edit, or remove. No code changes needed. |
 | `voices/` | Pre-built brand voice styles. Copy one to `config/voice.md` to get started. |
 | `config/` | Your `team-config.yml` (deploy points, AI provider) and `voice.md` (brand voice) live here. |
 | `examples/` | Sample config and a full end-to-end walkthrough. Start here. |
@@ -156,11 +156,11 @@ cp examples/sample-team-config.yml config/team-config.yml
 # 3. Set your team name, AI provider, and deploy points (branches → personas)
 
 # 4. Add your AI provider key to GitHub Actions secrets (AI_API_KEY)
-#    Jira secrets are optional — Legibly works without them
+#    Jira secrets are optional. Legibly works without them.
 
 # 5. Test locally before pushing (see Local Development)
 
-# 6. Push to a configured branch — Legibly runs automatically
+# 6. Push to a configured branch. Legibly runs automatically.
 ```
 
 See the [Setup Guide](docs/setup.md) for full configuration details.
@@ -212,12 +212,12 @@ For instructions on building a custom voice from scratch, see [docs/customizatio
 
 ## Docs
 
-- [docs/overview.md](docs/overview.md) — Industry context: the gap between engineering velocity and communication capacity
-- [docs/setup.md](docs/setup.md) — Setup Guide, Engineering Process, Local Development
-- [docs/customization.md](docs/customization.md) — Personas and Brand Voice customization
-- [docs/notifications.md](docs/notifications.md) — Output, Manual Runs, Notifications (Slack, Teams, Confluence, Webhook)
-- [docs/mcp.md](docs/mcp.md) — MCP Skill: on-demand translation in any MCP-compatible client
-- [docs/troubleshooting.md](docs/troubleshooting.md) — Troubleshooting
+- [docs/overview.md](docs/overview.md): Industry context on the gap between engineering velocity and communication capacity
+- [docs/setup.md](docs/setup.md): Setup Guide, Engineering Process, Local Development
+- [docs/customization.md](docs/customization.md): Personas and Brand Voice customization
+- [docs/notifications.md](docs/notifications.md): Output, Manual Runs, Notifications (Slack, Teams, Confluence, Webhook)
+- [docs/mcp.md](docs/mcp.md): MCP Skill, on-demand translation in any MCP-compatible client
+- [docs/troubleshooting.md](docs/troubleshooting.md): Troubleshooting
 
 ---
 

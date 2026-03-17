@@ -103,7 +103,7 @@ To optionally send those notes to Slack, Teams, Confluence, or a webhook, see [d
 
 ## Engineering Process
 
-Legibly's output quality is entirely dependent on what goes into PRs and commits. The AI translates your inputs — it cannot invent specifics that aren't there.
+Legibly's output quality is entirely dependent on what goes into PRs and commits. The AI translates your inputs. It cannot invent specifics that aren't there.
 
 ### PR descriptions are the main input
 
@@ -123,11 +123,11 @@ Legibly reads the last 20 commit messages. They supplement the PR description, e
 | Commit message | Value to Legibly |
 |---|---|
 | `fix auth bug` | Nothing useful |
-| `fix JWT expiry not refreshing on mobile after background resume` | Translatable — audience, symptom, trigger all present |
+| `fix JWT expiry not refreshing on mobile after background resume` | Translatable. Audience, symptom, and trigger all present. |
 
 ### What Legibly does not do
 
-Legibly does not review code, validate accuracy, or verify that what was described actually shipped. It trusts the inputs and translates them. Wrong inputs produce wrong notes — just in cleaner language. The engineer is responsible for what goes into the PR.
+Legibly does not review code, validate accuracy, or verify that what was described actually shipped. It trusts the inputs and translates them. Wrong inputs produce wrong notes, just in cleaner language. The engineer is responsible for what goes into the PR.
 
 ### Short checklist
 
@@ -149,7 +149,7 @@ Test your configuration and personas locally before pushing to CI.
 
 ```bash
 cp .env.local.example .env.local
-# Fill in your values — at minimum set AI_API_KEY and DEPLOY_ENVIRONMENT
+# Fill in your values. At minimum set AI_API_KEY and DEPLOY_ENVIRONMENT.
 ```
 
 **Run:**
@@ -181,7 +181,7 @@ npm run build       # compile TypeScript to dist/
 
 ## MCP Skill
 
-The same translation pipeline is available on demand inside any MCP-compatible client (Claude Desktop, opencode, Cursor, Zed, etc.). Useful for translating PRs before a merge, mid-review, or during standup prep — without waiting for CI.
+The same translation pipeline is available on demand inside any MCP-compatible client (Claude Desktop, opencode, Cursor, Zed, etc.). Useful for translating PRs before a merge, mid-review, or during standup prep, without waiting for CI.
 
 **Quick setup:**
 

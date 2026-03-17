@@ -43,7 +43,7 @@ Configure this with `max_files_per_persona` in the `output` block:
 
 ```yaml
 output:
-  max_files_per_persona: 50   # default — keep the last 50 deploys per audience
+  max_files_per_persona: 50   # default; keep the last 50 deploys per audience
   # max_files_per_persona: 0  # set to 0 to keep everything (no pruning)
 ```
 

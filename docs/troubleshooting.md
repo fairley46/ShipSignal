@@ -22,7 +22,7 @@ Check that `JIRA_BASE_URL`, `JIRA_USER_EMAIL`, and `JIRA_API_TOKEN` are all set.
 The `GITHUB_TOKEN` in your Actions environment doesn't have permission to push to a protected branch. Either loosen branch protection rules to allow the Legibly bot, or set the workflow to write to a separate branch.
 
 **Output is vague or missing metrics**
-The quality of generated notes depends on the quality of inputs. Legibly translates what it's given — it cannot invent specifics that aren't in the PR description or commit messages. See [Engineering Process](setup.md#engineering-process) for a checklist and before/after examples of what makes a difference.
+The quality of generated notes depends on the quality of inputs. Legibly translates what it's given. It cannot invent specifics that aren't in the PR description or commit messages. See [Engineering Process](setup.md#engineering-process) for a checklist and before/after examples of what makes a difference.
 
 **Notification workflow runs but nothing is sent**
 Either there's no `notify` block in `team-config.yml` for that environment, or the persona name in the workflow input doesn't match any note file in `release-notes/{environment}/`. Check that the file exists and that the persona name matches exactly.
