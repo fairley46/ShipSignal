@@ -1,22 +1,72 @@
 # End-to-End Example
 
-This is a complete ShipSignal run — from a real production merge to a generated
-release note. Everything below is what the tool reads, how it processes it, and
-what it produces.
-
-**Scenario:** A payments team merges a bug fix and two improvements to `main`.
-**Persona:** `customer.md` — the day-to-day user of the product.
-**Voice:** `the-operator.md` — direct, accountable, metrics-first.
+A payments engineering team sets up ShipSignal and pushes to production.
+This is everything that happens — from configuration to commit to generated output.
 
 ---
 
-## 1. What the Engineer Pushed
+## Step 1 — The Team Picks Their Voice
 
-**Commits merged to `main`:**
+The Payments team wants direct, accountable communication. No fluff. Numbers when
+they exist. They browse the voice library and copy The Operator into their config:
+
+```bash
+cp voices/the-operator.md config/voice.md
+```
+
+`config/voice.md` is now the universal style guide applied to every release note
+this team generates — regardless of audience.
+
+---
+
+## Step 2 — The Team Configures Their Deploy Points and Personas
+
+In `config/team-config.yml`, they define which branches map to which environments,
+and which audiences get notes for each one:
+
+```yaml
+team:
+  name: "Payments Team"
+  jira_project_key: "PAY"
+
+deploy_points:
+  - environment: production
+    branch_pattern: "main"
+    personas:
+      - vp          # Business outcomes and risk for leadership
+      - customer    # Day-to-day product users
+      - partner     # Integration partners and API consumers
+
+  - environment: staging
+    branch_pattern: "release/*"
+    personas:
+      - internal        # QA team building their test plan
+      - technical-user  # Engineers checking for breaking changes
+
+  - environment: hotfix
+    branch_pattern: "hotfix/*"
+    personas:
+      - vp        # Leadership needs to know immediately
+      - customer  # Users need to know what was broken and fixed
+
+ai_provider:
+  type: anthropic
+  model: claude-sonnet-4-6
+```
+
+That's the entire configuration. When they push to `main`, ShipSignal generates
+three notes — one for each persona listed under `production` — all written in
+The Operator voice.
+
+---
+
+## Step 3 — The Engineer Merges to Main
+
+Three commits land in a single PR merge:
 
 ```
 a3f7b2c1  fix: resolve duplicate charge events under concurrent session load (PAY-2341)
-e9d14f08  perf: replace synchronous validation in checkout with async pipeline (PAY-2287)
+e9d14f08  perf: replace synchronous checkout validation with async pipeline (PAY-2287)
 b72c3a19  feat: background export processing with download notification (PAY-2156)
 ```
 
@@ -37,65 +87,74 @@ PAY-2156: exports were blocking the UI thread while generating. Moved to a
 background job queue. Users get an email/notification when the file is ready.
 ```
 
-**Jira tickets pulled:**
+**Jira tickets pulled via API:**
 
 ```
 PAY-2341 [Critical] Duplicate charge events under concurrent load
-  Labels: payments, reliability, incident-risk
-  Description: Reported by enterprise customer (Acme Corp) after Black Friday.
-  Charge confirmation p99 was 3.8s; lock TTL was 3.0s. Race window: ~0.8s.
+  Reported by enterprise customer after Black Friday peak traffic.
+  Charge confirmation p99: 3.8s. Lock TTL: 3.0s. Race window: ~0.8s.
   Fix: lock TTL extended to 8s + idempotency key added to charge processor.
 
 PAY-2287 [High] Checkout validation blocking main thread
-  Labels: performance, checkout
-  p99 checkout time: 4.1s (load test at 150 concurrent users)
-  After: 0.8s. Target was <1.0s. Shipped.
+  p99 checkout time: 4.1s at 150 concurrent users → 0.8s after async migration.
+  Target was <1.0s. Shipped.
 
 PAY-2156 [Medium] Export UI blocks while file generates
-  Labels: exports, ux
-  Large exports (10k+ rows) were blocking the browser tab for up to 90 seconds.
-  Now queued as background job. Email + in-app notification on completion.
+  Large exports (10k+ rows) blocking browser tab for up to 90 seconds.
+  Now queued as background job. In-app + email notification on completion.
 ```
 
 ---
 
-## 2. What ShipSignal Extracts
+## Step 4 — ShipSignal Fires
 
-Before generating the note, ShipSignal runs a signal extraction pass across
-all inputs. This is the reasoning scratchpad — it never appears in the output.
+The GitHub Action triggers on the merge to `main`. It reads the config, detects
+the `production` environment, and queues one AI call per configured persona:
+`vp`, `customer`, `partner`.
+
+Before generating each note, it runs a signal extraction pass across all inputs:
 
 ```
-SIGNAL EXTRACTION
+SIGNAL EXTRACTION (internal scratchpad — not included in output)
 
 Performance metrics:
-- Checkout p99: 4.1s → 0.8s (80% improvement, load tested at 150 concurrent users)
-- Export blocking time eliminated: was up to 90s blocking; now async with notification
+- Checkout p99: 4.1s → 0.8s  (80% reduction, 150 concurrent users)
+- Export blocking: up to 90s → 0s (async, notification on completion)
 
-Reliability improvements:
-- Duplicate charge event race condition resolved
-- Root cause: lock TTL (3.0s) shorter than charge confirmation window (3.8s p99)
-- Fix: extended TTL + idempotency keys — eliminates the race window
-- Risk level: was affecting enterprise customers under concurrent load
+Reliability:
+- Duplicate charge race condition resolved
+- Root cause: lock TTL (3.0s) < charge confirmation window (3.8s p99)
+- Risk level: was reaching production under enterprise-level load
 
-User-visible behavior changes:
-- Checkout flow is significantly faster (felt: button responds in <1s vs 4+ seconds)
-- Exports no longer block the browser — user can navigate away and gets notified
-- Duplicate charges: user-visible only if charge fired twice; now prevented
+User-visible changes:
+- Checkout significantly faster — felt experience: <1s vs 4+ seconds
+- Exports no longer block the browser tab
+- Duplicate charge bug: prevented going forward
 
 Breaking changes: none
 Action required: none
 
-Environment: production
-Framing: delivered value customers can use today
+Environment: production → frame as delivered value, live today
+Voice: The Operator → direct, metrics-first, no softening
 ```
 
 ---
 
-## 3. Generated Release Note
+## Step 5 — The Output
 
-**Output file:** `release-notes/production/2026-03-16-a3f7b2c1-customer.md`
+Three files are committed back to the repo automatically:
+
+```
+release-notes/production/2026-03-16-a3f7b2c1-vp.md
+release-notes/production/2026-03-16-a3f7b2c1-customer.md
+release-notes/production/2026-03-16-a3f7b2c1-partner.md
+```
+
+Here's the customer note — written for a day-to-day product user, in The Operator voice:
 
 ---
+
+**`release-notes/production/2026-03-16-a3f7b2c1-customer.md`**
 
 ```markdown
 ---
@@ -110,20 +169,19 @@ generated_by: ShipSignal
 ## What's new — March 16, 2026
 
 **Faster checkout.**
-Completing a purchase now takes under a second in most cases. It was taking
-4+ seconds. That's live now — nothing to change on your end.
+Completing a purchase now takes under a second. It was taking 4+ seconds.
+Live now — nothing to change on your end.
 
 **Exports run in the background.**
-Large exports were locking up your browser tab while the file generated —
-sometimes for over a minute. That's gone. Start an export, keep working,
-and you'll get a notification when it's ready to download.
+Large exports were locking up your browser for up to a minute while the file
+generated. That's gone. Start the export, keep working, get a notification
+when it's ready.
 
 **Fixed: duplicate charges.**
-A bug under high-traffic conditions could cause a payment to be processed
-twice. It's resolved. If you ever saw an unexpected duplicate charge, contact
-support and we'll sort it out.
+A bug under high-traffic conditions could cause a payment to process twice.
+It's resolved. If you saw an unexpected duplicate charge, contact support.
 
-**Nothing you need to do.** All three changes are live automatically.
+**Nothing you need to do.** All three are live.
 ```
 
 ---
@@ -138,10 +196,13 @@ support and we'll sort it out.
 
 **What the customer needed to hear:**
 
-> "Checkout is fast now. Exports don't freeze your browser. We fixed a bug that
-> could charge you twice. Nothing you need to do."
+> "Checkout is fast now. Exports don't block your browser. We fixed a bug that could
+> charge you twice. Nothing you need to do."
 
-Same facts. Completely different signal.
+Same facts. Right signal for the right audience.
 
-ShipSignal reads the engineer's output and produces the customer's input — automatically,
-on every merge, for every audience you've configured.
+The VP got a note about SLA risk and enterprise account reliability.
+The partner got a note confirming no API surface changes.
+The customer got the note above.
+
+All three generated automatically. Zero product owner time spent writing.

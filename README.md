@@ -83,12 +83,16 @@ Everything else is automatic.
 
 ## End-to-End Example
 
-See [`examples/e2e-example.md`](examples/e2e-example.md) for a complete walkthrough —
-a real production merge with commit messages, a PR description, and Jira tickets going
-in, and a generated customer release note (Operator voice) coming out.
+See [`examples/e2e-example.md`](examples/e2e-example.md) for a complete walkthrough:
 
-The last section shows the gap this closes side-by-side: what the engineer wrote vs.
-what the customer needed to hear.
+1. A team picks The Operator voice and copies it to `config/voice.md`
+2. They configure deploy points — which branches, which environments, which personas
+3. An engineer merges three commits to `main`
+4. ShipSignal reads the commits, PR description, and Jira tickets and extracts the value signals
+5. Three notes are generated and committed — one per configured persona
+
+The final section shows the gap side-by-side: what the engineer wrote vs. what each
+audience needed to hear. Same facts. Right signal for the right person.
 
 ---
 
