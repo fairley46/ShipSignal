@@ -9,12 +9,16 @@
     "dev": "npm run build && node -r dotenv/config dist/index.js dotenv_config_path=../.env.local",
     "lint": "eslint src/**/*.ts",
     "typecheck": "tsc --noEmit",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "mcp": "node dist/mcp.js",
+    "mcp:dev": "npm run build && node dist/mcp.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "~0.39.0",
+    "@modelcontextprotocol/sdk": "^1.10.0",
     "js-yaml": "~4.1.0",
-    "openai": "~4.0.0"
+    "openai": "~4.0.0",
+    "zod": "^3.22.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

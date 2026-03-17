@@ -176,3 +176,38 @@ npm run build       # compile TypeScript to dist/
 2. Add it to `deploy_points[].personas` in `config/team-config.yml`
 3. Set `PERSONA_OVERRIDE=your-persona-name` in `.env.local`
 4. Run `npm run dev` and review the output before pushing
+
+---
+
+## MCP Skill (Claude Desktop)
+
+The same translation pipeline is available on demand inside Claude Desktop via the MCP skill. Useful for translating PRs before a merge, mid-review, or during standup prep — without waiting for CI.
+
+**Quick setup:**
+
+```bash
+cd action
+npm install
+npm run build   # produces dist/mcp.js
+```
+
+Then add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "legibly": {
+      "command": "node",
+      "args": ["/absolute/path/to/repo/action/dist/mcp.js"],
+      "env": {
+        "LEGIBLY_REPO_ROOT": "/absolute/path/to/repo",
+        "AI_API_KEY": "sk-ant-..."
+      }
+    }
+  }
+}
+```
+
+Restart Claude Desktop. Ask: **"What personas does Legibly know about?"** to verify.
+
+→ [Full MCP guide](mcp.md)
