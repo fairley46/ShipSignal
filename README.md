@@ -216,7 +216,7 @@ For instructions on building a custom voice from scratch, see [docs/customizatio
 - [docs/setup.md](docs/setup.md) — Setup Guide, Engineering Process, Local Development
 - [docs/customization.md](docs/customization.md) — Personas and Brand Voice customization
 - [docs/notifications.md](docs/notifications.md) — Output, Manual Runs, Notifications (Slack, Teams, Confluence, Webhook)
-- [docs/mcp.md](docs/mcp.md) — MCP Skill: on-demand translation in Claude Desktop
+- [docs/mcp.md](docs/mcp.md) — MCP Skill: on-demand translation in any MCP-compatible client
 - [docs/troubleshooting.md](docs/troubleshooting.md) — Troubleshooting
 
 ---
