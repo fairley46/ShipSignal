@@ -1,3 +1,16 @@
+import type { CIPlatform } from './ci-platform.js';
+
+export interface GitLabConfig {
+  enabled: boolean;
+  projectId?: string;
+}
+
+export interface BitbucketConfig {
+  enabled: boolean;
+  workspace?: string;
+  repoSlug?: string;
+}
+
 export interface TeamConfig {
   team: {
     name: string;
@@ -8,6 +21,8 @@ export interface TeamConfig {
   ai_provider: AIProviderConfig;
   jira?: JiraConfig;
   output?: OutputConfig;
+  gitlab?: GitLabConfig;
+  bitbucket?: BitbucketConfig;
 }
 
 export interface SlackNotifyConfig {
@@ -88,6 +103,7 @@ export interface GitContext {
   ticketIds: string[];
   sha: string;
   branch: string;
+  ciPlatform: CIPlatform;
 }
 
 export interface GeneratedNote {
