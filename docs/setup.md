@@ -52,7 +52,7 @@ ai_provider:
 
 ## Step 3: Add secrets
 
-Go to **Settings > Secrets and variables > Actions** in your repo and add:
+Add the following secrets to your CI system:
 
 | Secret | Required | Description |
 |---|---|---|
@@ -63,18 +63,14 @@ Go to **Settings > Secrets and variables > Actions** in your repo and add:
 
 Legibly works without Jira. If the secrets aren't set, it skips ticket enrichment and generates notes from the git diff and commit messages alone.
 
-The workflow requires these permissions (already set in the workflow file, no action needed):
-- `contents: write`: commit generated notes back to the repo
-- `pull-requests: read`: read PR descriptions
+**Where to add secrets by platform:**
 
-If your repo has branch protection on `main`, you'll need to allow the Legibly bot to bypass it, or configure a dedicated bot token with write access.
+- **GitHub Actions**: Settings > Secrets and variables > Actions. Can be set at repo or org level.
+- **GitLab CI**: Settings > CI/CD > Variables. See [docs/gitlab-setup.md](gitlab-setup.md).
+- **Bitbucket Pipelines**: Repository settings > Repository variables. See [docs/bitbucket-setup.md](bitbucket-setup.md).
+- **Other CI**: Set as environment variables in your pipeline config. See [docs/other-ci-setup.md](other-ci-setup.md).
 
-**Secret management options:**
-
-- **Repo-level**: Settings > Secrets and variables > Actions (default)
-- **Org-level**: Org Settings > Secrets. Set once, inherited by all repos. Best for org-wide rollouts.
-- **Environments**: scope secrets to specific environments (production vs staging) with optional approval gates
-- **External**: HashiCorp Vault, AWS Secrets Manager, Azure Key Vault, for teams with existing secret management infrastructure
+**Committing generated notes back to the repo** requires your CI bot to have write access to the branch. On GitHub Actions this means `contents: write` permission (already set in the workflow file). On GitLab and Bitbucket, the access token you provide needs repository write scope — see the platform-specific setup guides for details.
 
 ---
 

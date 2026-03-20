@@ -55,14 +55,19 @@ To send these notes to Slack, Teams, Confluence, or a custom endpoint, see [Noti
 
 ## Manual Runs
 
-Trigger note generation manually from the GitHub Actions UI under **Actions > Generate Release Notes > Run workflow**.
+Trigger note generation manually from your CI platform:
 
-Optional inputs:
+- **GitHub Actions**: Actions > Generate Release Notes > Run workflow
+- **GitLab CI**: Pipelines > Run pipeline, set `DEPLOY_ENVIRONMENT` and optionally `PERSONA_OVERRIDE` as variables
+- **Bitbucket Pipelines**: Pipelines > Run pipeline on the target branch
+- **Other CI**: Run `node action/dist/index.js` directly with `DEPLOY_ENVIRONMENT` set
 
-| Input | Description | Example |
+Optional environment variables:
+
+| Variable | Description | Example |
 |---|---|---|
-| `environment` | Override the detected environment | `production` |
-| `personas` | Comma-separated persona override | `vp,customer` |
+| `DEPLOY_ENVIRONMENT` | Override the detected environment | `production` |
+| `PERSONA_OVERRIDE` | Comma-separated persona override | `vp,customer` |
 
 Useful for re-generating notes after updating a persona file, or for previewing a new persona against a recent commit before wiring it into the pipeline.
 

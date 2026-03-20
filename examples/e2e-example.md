@@ -108,7 +108,7 @@ PAY-2156 [Medium] Export UI blocks while file generates
 
 ## Step 4 — Legibly Fires
 
-The GitHub Action triggers on the merge to `main`. It reads the config, detects
+The CI pipeline triggers on the merge to `main`. It reads the config, detects
 the `production` environment, and queues one AI call per configured persona:
 `vp`, `customer`, `partner`.
 
