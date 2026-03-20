@@ -121,9 +121,37 @@ Legibly reads the last 20 commit messages. They supplement the PR description, e
 | `fix auth bug` | Nothing useful |
 | `fix JWT expiry not refreshing on mobile after background resume` | Translatable. Audience, symptom, and trigger all present. |
 
-### What Legibly does not do
+### Writing PRs with an AI coding agent
 
-Legibly does not review code, validate accuracy, or verify that what was described actually shipped. It trusts the inputs and translates them. Wrong inputs produce wrong notes, just in cleaner language. The engineer is responsible for what goes into the PR.
+If you're using an AI coding tool (Claude, Copilot, Cursor, or similar) to write code, you have an advantage most teams miss: the agent that wrote the code already knows exactly what it changed and why. Use that context.
+
+Before closing the session, ask your agent to write the PR description. It has the full picture — the reasoning, the tradeoffs, the specific metrics, the files touched. A one-line prompt like *"write a detailed PR description covering what changed, why, and what the user-visible impact is"* will produce input that Legibly can translate into sharp, specific release notes.
+
+The alternative is writing the description yourself after the fact, from memory, which is where vague language creeps in.
+
+**The full loop when coding agentically:**
+
+```
+Agent writes code
+        ↓
+Agent writes PR description (from session context)
+        ↓
+Legibly generates release notes (from PR description + diff)
+        ↓
+Committed to repo automatically — zero communication overhead
+```
+
+This is the highest-leverage path. The description quality is what determines the output quality at every stage downstream.
+
+---
+
+### Code review is intentionally out of scope
+
+Legibly does not review code, validate accuracy, or verify that what was described actually shipped. This is a deliberate design decision, not a gap.
+
+The engineer is the accuracy gate. Legibly's job is translation, not auditing. It takes what you put into the PR description and commit messages at face value and renders it for each audience. That separation keeps Legibly fast, predictable, and easy to trust — you control the inputs, it controls the presentation.
+
+Wrong or vague inputs produce wrong or vague notes, just in cleaner language. The checklist below is the mechanism for keeping inputs honest.
 
 ### Short checklist
 
