@@ -1,7 +1,10 @@
 import { execSync } from 'child_process';
 import type { TeamConfig, GitContext } from './types.js';
+import { getPlatformEnv } from './ci-platform.js';
 
 export async function extractGitContext(_config: TeamConfig): Promise<GitContext> {
+  const platformEnv = getPlatformEnv();
+
   let diffSummary = '';
   let diffLineCount = 0;
 
@@ -39,7 +42,8 @@ export async function extractGitContext(_config: TeamConfig): Promise<GitContext
     diffLineCount,
     commitMessages,
     ticketIds,
-    sha: (process.env['GH_SHA'] ?? 'unknown').slice(0, 8),
-    branch: process.env['GH_REF_NAME'] ?? 'unknown',
+    sha: (platformEnv.sha ?? 'unknown').slice(0, 8),
+    branch: platformEnv.branch ?? 'unknown',
+    ciPlatform: platformEnv.platform,
   };
 }

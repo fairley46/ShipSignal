@@ -37,6 +37,7 @@ function buildMcpGitContext(opts: {
     ticketIds,
     sha: opts.sha?.slice(0, 8) ?? 'on-demand',
     branch: opts.branch ?? 'on-demand',
+    ciPlatform: 'generic',
   };
 }
 
