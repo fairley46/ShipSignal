@@ -1,8 +1,11 @@
+import { detectPlatform } from './ci-platform.js';
+
 export async function fetchPRDescription(
   prNumber: string | undefined,
   repository: string | undefined,
   token: string | undefined
 ): Promise<string> {
+  if (detectPlatform() !== 'github') return 'No pull request description available.';
   if (!prNumber || !repository || !token) {
     return 'No pull request description available.';
   }
